@@ -1,0 +1,41 @@
+# PDFs de exemplo (não commitar extratos reais)
+*.pdf
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+
+# Flask
+instance/
+.webassets-cache
+
+# Uploads e exports
+WEBAPP/uploads/
+WEBAPP/exports/
+NUBANK/outputs/
+ITAU/outputs/
+SANTANDER/outputs/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Git submodules (se não usar)
+ITAU/.git
+SANTANDER/.git
