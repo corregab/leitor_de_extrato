@@ -1,137 +1,123 @@
-# 🎯 PASSO FINAL - Conectar ao GitHub e Deploy
+# 🎯 DEPLOY GRATUITO - PythonAnywhere
 
 ## 📋 Você já tem tudo pronto!
 
 ✅ Código preparado para deploy  
 ✅ Git inicializado  
 ✅ Arquivos commitados  
-✅ Configurações do Render prontas  
 
 ---
 
-## 🔗 PRÓXIMOS PASSOS:
+## 🆓 OPÇÃO 1: PythonAnywhere (100% GRÁTIS - RECOMENDADO)
 
-### 1️⃣ Criar Repositório no GitHub
+### Vantagens:
+- ✅ Totalmente GRATUITO (para sempre!)
+- ✅ Especializado em Python/Flask
+- ✅ Fácil de configurar
+- ✅ 512MB de espaço
+- ✅ Domínio: `seuusuario.pythonanywhere.com`
 
-1. Acesse: https://github.com/new
-2. **Repository name**: `leitor_de_extrato`
-3. **Description**: `Sistema web para extração de créditos de extratos bancários (Itaú, Santander, Nubank)`
-4. **Private** ✅ (recomendado - contém lógica de negócio)
-5. **NÃO** marque "Initialize with README" (já temos)
-6. Clique **"Create repository"**
+### Passo a Passo:
 
-### 2️⃣ Conectar e Enviar (no PowerShell)
+1. **Criar conta**: https://www.pythonanywhere.com/registration/register/beginner/
+   - Use um email válido
+   - Escolha um username (será seu domínio)
 
-Copie e cole os comandos que o GitHub mostrar, ou use estes:
-
-```powershell
-cd "c:\Users\gabri\OneDrive\Documentos\documentos Gabriel\Extratos"
-
-# Adicionar remote (substitua SEU_USUARIO pelo seu username do GitHub)
-git remote add origin https://github.com/corregab/leitor_de_extrato.git
-
-# Renomear branch para main (se necessário)
-git branch -M main
-
-# Enviar para o GitHub
-git push -u origin main
-```
-
-**Se pedir autenticação:**
-- Use seu Personal Access Token (não senha!)
-- Ou configure SSH keys
-
-### 3️⃣ Deploy no Render
-
-Agora que está no GitHub:
-
-1. Acesse: https://dashboard.render.com
-2. Clique **"New +"** → **"Web Service"**
-3. Conecte GitHub e selecione `leitor_de_extrato`
-4. O Render detectará `render.yaml` automaticamente
-5. Adicione variável de ambiente:
+2. **Fazer upload do código:**
+   - Dashboard → **Files**
+   - Upload dos arquivos ou use **Git**:
+   ```bash
+   # No console Bash do PythonAnywhere:
+   git clone https://github.com/corregab/leitor_de_extrato.git
+   cd leitor_de_extrato
    ```
-   FLASK_SECRET_KEY = <gere com: python -c "import secrets; print(secrets.token_hex(32))">
+
+3. **Instalar dependências:**
+   ```bash
+   cd ~/leitor_de_extrato/WEBAPP
+   pip3.10 install --user -r requirements.txt
    ```
-6. Clique **"Create Web Service"**
 
-### 4️⃣ Aguarde o Deploy 🚀
+4. **Configurar Web App:**
+   - Dashboard → **Web** → **Add a new web app**
+   - Framework: **Flask**
+   - Python version: **3.10**
+   - Path: `/home/seuusuario/leitor_de_extrato/WEBAPP/app.py`
 
-- Build: ~2-3 minutos
-- Primeira vez pode demorar mais
-- Quando mostrar **"Live"**, está no ar!
+5. **Configurar WSGI:**
+   - Edite o arquivo WSGI que foi criado
+   - Substitua o conteúdo por:
+   ```python
+   import sys
+   path = '/home/seuusuario/leitor_de_extrato'
+   if path not in sys.path:
+       sys.path.insert(0, path)
+   
+   from WEBAPP.app import app as application
+   ```
 
-Seu site estará em:
+6. **Reload** e pronto! 🎉
+   - Seu site: `https://seuusuario.pythonanywhere.com`
+
+---
+
+## 🆓 OPÇÃO 2: Railway.app ($5 GRÁTIS/MÊS)
+
+### Vantagens:
+- ✅ $5 de crédito mensal (suficiente para site pequeno)
+- ✅ Deploy super fácil
+- ✅ Domínio personalizado grátis
+
+### Passo a Passo:
+
+1. **Criar conta**: https://railway.app
+   - Login com GitHub
+
+2. **Novo projeto:**
+   - New Project → Deploy from GitHub repo
+   - Selecione `leitor_de_extrato`
+
+3. **Configurações automáticas:**
+   Railway detecta Python e Flask automaticamente!
+
+4. **Variáveis de ambiente:**
+   - Adicione: `PORT=8080`
+   - Adicione: `FLASK_SECRET_KEY=<chave-secreta>`
+
+5. **Deploy automático!** ✅
+
+---
+
+## 🆓 OPÇÃO 3: Vercel (GRÁTIS)
+
+**⚠️ Limitação:** Vercel é para sites serverless, então precisa adaptar um pouco.
+
+---
+
+## 🎯 RECOMENDAÇÃO:
+
+**Use PythonAnywhere!** É:
+- ✅ 100% gratuito
+- ✅ Feito para Python
+- ✅ Mais fácil de configurar
+- ✅ Sem surpresas de cobrança
+
+---
+
+## 📋 Checklist PythonAnywhere:
+
 ```
-https://leitor-extrato.onrender.com
+1. ☐ Criar conta no PythonAnywhere
+2. ☐ Fazer push do código para GitHub
+3. ☐ Clonar repo no PythonAnywhere via console Bash
+4. ☐ Instalar dependências com pip
+5. ☐ Criar Web App (Flask, Python 3.10)
+6. ☐ Configurar WSGI file
+7. ☐ Reload e testar!
 ```
 
 ---
 
-## 🔄 Fazer Updates Depois
+## 🆘 Dúvidas?
 
-Sempre que modificar o código:
-
-```powershell
-# Usar o script de deploy
-.\deploy.ps1 "descrição da mudança"
-```
-
-**OU manualmente:**
-```powershell
-git add .
-git commit -m "descrição da mudança"
-git push origin main
-```
-
-O Render automaticamente detecta e faz novo deploy!
-
----
-
-## 🆘 Problemas Comuns
-
-### Erro ao fazer push?
-```powershell
-# Se der erro de autenticação, use Personal Access Token:
-# Settings → Developer settings → Personal access tokens → Generate new token
-# Use o token como senha
-```
-
-### Render não encontra o repo?
-- Certifique-se que conectou a conta GitHub certa
-- Verifique se o repo é privado e você deu permissão ao Render
-
-### Build falha no Render?
-- Verifique os logs no dashboard
-- Certifique-se que `render.yaml` está no root
-- Verifique se `WEBAPP/requirements.txt` está correto
-
----
-
-## 📊 Status Atual
-
-```
-✅ Git inicializado
-✅ Código commitado
-✅ Arquivos de deploy criados
-⏳ Aguardando: Criar repo no GitHub
-⏳ Aguardando: Push para GitHub  
-⏳ Aguardando: Deploy no Render
-```
-
----
-
-## 💡 Dicas
-
-1. **Mantenha o repo privado** - Contém lógica de negócio
-2. **Use .gitignore** - Nunca commite PDFs de clientes
-3. **Monitore os logs** - Dashboard do Render mostra tudo
-4. **Teste localmente** - Sempre teste antes de fazer push
-
----
-
-## 🎉 Pronto para Começar!
-
-Execute os comandos acima e em **10 minutos** seu site estará público! 🚀
-
-Qualquer dúvida, me chame! 🤖
+Me chame que eu te ajudo com qualquer uma das opções! 🤖
