@@ -1,0 +1,5 @@
+Flask==3.0.3
+pdfplumber==0.7.6
+Werkzeug==3.0.3
+gunicorn==21.2.0
+

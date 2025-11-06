@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: leitor-extrato
+    env: python
+    region: oregon
+    plan: free
+    branch: main
+    buildCommand: "pip install -r WEBAPP/requirements.txt"
+    startCommand: "cd WEBAPP && gunicorn -c gunicorn_config.py app:app"
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: PYTHON_VERSION
+        value: 3.12.0
