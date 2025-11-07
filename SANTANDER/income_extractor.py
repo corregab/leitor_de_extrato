@@ -45,6 +45,12 @@ def is_incoming(line: str) -> bool:
     inc_positive = ['RECEBIDO', 'RECEBIMENTO', 'DEP', 'DEPÓSITO', 'DEPOSITO', 'CRÉDITO', 'CRED', 'CREDITO', 'CR\b']
     inc_loose = ['TRANSFERÊNCIA RECEBIDA', 'TRANSFERENCIA RECEBIDA', 'TED RECEBIDO', 'DOC RECEBIDO']
     exc_keywords = ['SAQUE', 'PAGAMENTO', 'COMPRA', 'TARIFA', 'TAXA', 'DEBITO', 'DÉBITO', 'PAGTO', 'ESTORNO', 'ENVIADO', 'LIMITE']
+    
+    # Exclui linhas de totais e resumos (não são transações individuais)
+    summary_keywords = ['TOTAL DE CRÉDITO', 'TOTAL DE DÉBITO', 'RESUMO', 'DEPÓSITO / TRANSFER', 'DEPOSITO / TRANSFER', 'DEPÓSITOS / TRANSFER', 'DEPOSITOS / TRANSFER', '(+) TOTAL', '(-) TOTAL']
+    
+    if any(s in line_up for s in summary_keywords):
+        return False
 
     if any(e in line_up for e in exc_keywords):
         return False
