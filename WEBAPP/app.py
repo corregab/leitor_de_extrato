@@ -31,6 +31,16 @@ try:
 except Exception:
     NubankExtractor = None  # type: ignore
 
+try:
+    from PICPAY.picpay_extractor import PicPayExtractor
+except Exception:
+    PicPayExtractor = None  # type: ignore
+
+try:
+    from MERCADOPAGO.mercadopago_extractor import MercadoPagoExtractor
+except Exception:
+    MercadoPagoExtractor = None  # type: ignore
+
 
 UPLOAD_DIR = os.path.join(BASE_DIR, 'uploads')
 ALLOWED_EXTENSIONS = {'.pdf'}
@@ -138,8 +148,50 @@ def process():
             total_str = f"R$ {str(total.quantize(Decimal('.01'))).replace('.', ',')}"
             return render_template('results.html', bank_label='Nubank', rows=rows, total=total_str)
 
+        elif bank == 'picpay':
+            if PicPayExtractor is None:
+                raise RuntimeError('Módulo PICPAY.picpay_extractor não disponível')
+            extractor = PicPayExtractor()
+            credits = extractor.extract_credits(filepath)
+
+            rows: List[Dict[str, Any]] = []
+            total = Decimal('0')
+            for e in credits:
+                amt = e.amount.quantize(Decimal('.01'), rounding=ROUND_DOWN)
+                total += amt
+                rows.append({
+                    'date': e.date,
+                    'type': e.transaction_type,
+                    'description': e.description,
+                    'amount': f"R$ {str(amt).replace('.', ',')}",
+                    'amount_plain': str(amt).replace('.', ',')
+                })
+            total_str = f"R$ {str(total.quantize(Decimal('.01'))).replace('.', ',')}"
+            return render_template('results.html', bank_label='PicPay', rows=rows, total=total_str)
+
+        elif bank == 'mercadopago':
+            if MercadoPagoExtractor is None:
+                raise RuntimeError('Módulo MERCADOPAGO.mercadopago_extractor não disponível')
+            extractor = MercadoPagoExtractor()
+            credits = extractor.extract_credits(filepath)
+
+            rows: List[Dict[str, Any]] = []
+            total = Decimal('0')
+            for e in credits:
+                amt = e.amount.quantize(Decimal('.01'), rounding=ROUND_DOWN)
+                total += amt
+                rows.append({
+                    'date': e.date,
+                    'type': e.transaction_type,
+                    'description': e.description,
+                    'amount': f"R$ {str(amt).replace('.', ',')}",
+                    'amount_plain': str(amt).replace('.', ',')
+                })
+            total_str = f"R$ {str(total.quantize(Decimal('.01'))).replace('.', ',')}"
+            return render_template('results.html', bank_label='Mercado Pago', rows=rows, total=total_str)
+
         else:
-            flash('Banco não suportado (use Itaú, Santander ou Nubank).')
+            flash('Banco não suportado (use Itaú, Santander, Nubank, PicPay ou Mercado Pago).')
             return redirect(url_for('index'))
 
     except Exception as exc:
