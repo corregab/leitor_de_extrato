@@ -12,12 +12,22 @@
     th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #eee; }
     th { background: #f8f8f8; }
     .total { text-align: right; font-weight: 700; padding-top: 16px; }
-    a.btn { display:inline-block; margin-top: 16px; padding: 10px 16px; border: 0; background:#0d6efd; color:white; border-radius:8px; text-decoration:none; }
+    a.btn, button.btn { display:inline-block; margin-top: 16px; padding: 10px 16px; border: 0; background:#0d6efd; color:white; border-radius:8px; text-decoration:none; cursor:pointer; }
+    .btn.secondary { background:#6c757d; }
+    /* Coluna auxiliar para copiar apenas os valores */
+    .copy-col { text-align: right; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color:#444; white-space: nowrap; }
+    .actions { display:flex; gap:8px; align-items:center; }
+    .hint { color:#666; font-size:12px; margin-left:8px; }
   </style>
 </head>
 <body>
   <div class="card">
     <h1>Resultados — {{ bank_label }}</h1>
+
+    <div class="actions">
+      <button id="copy-values" class="btn secondary">Copiar valores</button>
+      <span class="hint">Dica: arraste o mouse na coluna "Valor (copiar)" para selecionar vários.</span>
+    </div>
 
     <table>
       <thead>
@@ -26,6 +36,7 @@
           <th>Tipo</th>
           <th>Descrição</th>
           <th style="text-align:right">Valor</th>
+          <th class="copy-col">Valor (copiar)</th>
         </tr>
       </thead>
       <tbody>
@@ -35,6 +46,7 @@
             <td>{{ r.type }}</td>
             <td>{{ r.description }}</td>
             <td style="text-align:right">{{ r.amount }}</td>
+            <td class="copy-col">{{ r.amount_plain }}</td>
           </tr>
         {% endfor %}
       </tbody>
@@ -44,5 +56,32 @@
 
     <a href="{{ url_for('index') }}" class="btn">Voltar</a>
   </div>
+
+  <script>
+    (function(){
+      const btn = document.getElementById('copy-values');
+      if (!btn) return;
+      btn.addEventListener('click', async () => {
+        const cells = Array.from(document.querySelectorAll('td.copy-col'));
+        const lines = cells.map(td => (td.textContent || '').trim()).filter(Boolean);
+        const text = lines.join('\n');
+        try {
+          await navigator.clipboard.writeText(text);
+          btn.textContent = 'Copiado!';
+          setTimeout(() => btn.textContent = 'Copiar valores', 1500);
+        } catch (err) {
+          // Fallback: cria um textarea temporário
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          document.body.appendChild(ta);
+          ta.select();
+          try { document.execCommand('copy'); } catch(e){}
+          document.body.removeChild(ta);
+          btn.textContent = 'Copiado!';
+          setTimeout(() => btn.textContent = 'Copiar valores', 1500);
+        }
+      });
+    })();
+  </script>
 </body>
 </html>

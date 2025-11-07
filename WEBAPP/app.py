@@ -90,7 +90,9 @@ def process():
                     'date': e.date,
                     'type': e.transaction_type,
                     'description': e.description,
-                    'amount': f"R$ {str(amt).replace('.', ',')}"
+                    'amount': f"R$ {str(amt).replace('.', ',')}",
+                    # Coluna auxiliar para copiar facilmente apenas o número
+                    'amount_plain': str(amt).replace('.', ',')
                 })
             total_str = f"R$ {str(total.quantize(Decimal('.01'))).replace('.', ',')}"
             return render_template('results.html', bank_label='Itaú', rows=rows, total=total_str)
@@ -109,7 +111,8 @@ def process():
                     'date': e.date or '-',
                     'type': 'CRÉDITO',
                     'description': e.description,
-                    'amount': amount_str
+                    'amount': amount_str,
+                    'amount_plain': f"{float(e.amount):.2f}".replace('.', ',')
                 })
             total_str = f"R$ {total:.2f}".replace('.', ',')
             return render_template('results.html', bank_label='Santander', rows=rows, total=total_str)
@@ -129,7 +132,8 @@ def process():
                     'date': e.date,
                     'type': e.transaction_type,
                     'description': e.description,
-                    'amount': f"R$ {str(amt).replace('.', ',')}"
+                    'amount': f"R$ {str(amt).replace('.', ',')}",
+                    'amount_plain': str(amt).replace('.', ',')
                 })
             total_str = f"R$ {str(total.quantize(Decimal('.01'))).replace('.', ',')}"
             return render_template('results.html', bank_label='Nubank', rows=rows, total=total_str)
