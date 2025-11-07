@@ -1,270 +1,537 @@
-<!doctype html>
-<html lang="pt-br">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>APURE AQUI! by Flexcredit</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #0000FF 0%, #0033cc 100%);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-    
-    .container {
-      width: 100%;
-      max-width: 480px;
-    }
-    
-    .card {
-      background: white;
-      border-radius: 20px;
-      padding: 40px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-      animation: slideUp 0.5s ease-out;
-    }
-    
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .header {
-      text-align: center;
-      margin-bottom: 32px;
-    }
-    
-    .logo-container {
-      width: 120px;
-      height: 80px;
-      background: #0000FF;
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 16px;
-      padding: 10px;
-      box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
-    }
-    
-    .logo-x {
-      font-size: 64px;
-      font-weight: 900;
-      color: #FF0000;
-      font-family: Arial Black, sans-serif;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-    }
-    
-    h1 {
-      font-size: 28px;
-      font-weight: 700;
-      color: #1a202c;
-      margin-bottom: 4px;
-    }
-    
-    .brand {
-      font-size: 14px;
-      color: #666;
-      font-weight: 500;
-    }
-    
-    .subtitle {
-      color: #718096;
-      font-size: 14px;
-    }
-    
-    .flash {
-      background: #fed7d7;
-      border-left: 4px solid #f56565;
-      color: #742a2a;
-      padding: 14px 16px;
-      border-radius: 8px;
-      margin-bottom: 24px;
-      font-size: 14px;
-      animation: shake 0.3s;
-    }
-    
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-5px); }
-      75% { transform: translateX(5px); }
-    }
-    
-    .form-group {
-      margin-bottom: 24px;
-    }
-    
-    label {
-      display: block;
-      font-weight: 600;
-      color: #2d3748;
-      margin-bottom: 8px;
-      font-size: 14px;
-      letter-spacing: 0.3px;
-    }
-    
-    select, input[type=file] {
-      width: 100%;
-      padding: 12px 16px;
-      border: 2px solid #e2e8f0;
-      border-radius: 10px;
-      font-size: 15px;
-      transition: all 0.2s;
-      background: white;
-      color: #2d3748;
-    }
-    
-    select:focus, input[type=file]:focus {
-      outline: none;
-      border-color: #FF0000;
-      box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.1);
-    }
-    
-    select {
-      cursor: pointer;
-      appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23FF0000' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 16px center;
-      padding-right: 40px;
-    }
-    
-    input[type=file] {
-      padding: 10px 16px;
-      cursor: pointer;
-    }
-    
-    input[type=file]::file-selector-button {
-      background: #FF0000;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 600;
-      margin-right: 12px;
-      transition: transform 0.2s;
-    }
-    
-    input[type=file]::file-selector-button:hover {
-      transform: scale(1.05);
-      background: #cc0000;
-    }
-    
-    button {
-      width: 100%;
-      padding: 14px;
-      background: #FF0000;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-      box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4);
-    }
-    
-    button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(255, 0, 0, 0.5);
-      background: #cc0000;
-    }
-    
-    button:active {
-      transform: translateY(0);
-    }
-    
-    .banks-list {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-top: 8px;
-    }
-    
-    .bank-badge {
-      background: #f7fafc;
-      padding: 6px 10px;
-      border-radius: 6px;
-      text-align: center;
-      font-size: 11px;
-      color: #4a5568;
-      font-weight: 500;
-    }
-    
-    .footer {
-      text-align: center;
-      margin-top: 24px;
-      color: white;
-      font-size: 13px;
-      opacity: 0.9;
-    }
-    
-    @media (max-width: 480px) {
-      .card { padding: 28px 24px; }
-      h1 { font-size: 24px; }
-      .banks-list { grid-template-columns: repeat(2, 1fr); }
-    }
-  </style>
-</head>
-<body>
-      <div class="header">
-        <div class="logo-container">
-          <div class="logo-x">X</div>
-        </div>
-        <h1>APURE AQUI!</h1>
-        <p class="brand">by Flexcredit</p>
-        <p class="subtitle">Extraia créditos dos seus extratos bancários</p>
-      </div>Apuração de Extratos</h1>
-        <p class="subtitle">Extraia créditos dos seus extratos bancários</p>
-      </div>
+<!doctype html><!doctype html>
 
-      {% with messages = get_flashed_messages() %}
-        {% if messages %}
-          {% for msg in messages %}
+<html lang="pt-br"><html lang="pt-br">
+
+<head><head>
+
+  <meta charset="utf-8">  <meta charset="utf-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>APURE AQUI!</title>  <title>APURE AQUI! by Flexcredit</title>
+
+  <style>  <style>
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        
+
+    body {    body {
+
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+      background: linear-gradient(135deg, #0000FF 0%, #0033cc 100%);      background: linear-gradient(135deg, #0000FF 0%, #0033cc 100%);
+
+      min-height: 100vh;      min-height: 100vh;
+
+      display: flex;      display: flex;
+
+      align-items: center;      align-items: center;
+
+      justify-content: center;      justify-content: center;
+
+      padding: 20px;      padding: 20px;
+
+    }    }
+
+        
+
+    .container {    .container {
+
+      width: 100%;      width: 100%;
+
+      max-width: 480px;      max-width: 480px;
+
+    }    }
+
+        
+
+    .card {    .card {
+
+      background: white;      background: white;
+
+      border-radius: 20px;      border-radius: 20px;
+
+      padding: 40px;      padding: 40px;
+
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+
+      animation: slideUp 0.5s ease-out;      animation: slideUp 0.5s ease-out;
+
+    }    }
+
+        
+
+    @keyframes slideUp {    @keyframes slideUp {
+
+      from { opacity: 0; transform: translateY(30px); }      from { opacity: 0; transform: translateY(30px); }
+
+      to { opacity: 1; transform: translateY(0); }      to { opacity: 1; transform: translateY(0); }
+
+    }    }
+
+        
+
+    .header {    .header {
+
+      text-align: center;      text-align: center;
+
+      margin-bottom: 32px;      margin-bottom: 32px;
+
+    }    }
+
+        
+
+    .icon {    .logo-container {
+
+      width: 64px;      width: 120px;
+
+      height: 64px;      height: 80px;
+
+      background: #FF0000;      background: #0000FF;
+
+      border-radius: 16px;      border-radius: 16px;
+
+      display: flex;      display: flex;
+
+      align-items: center;      align-items: center;
+
+      justify-content: center;      justify-content: center;
+
+      margin: 0 auto 16px;      margin: 0 auto 16px;
+
+      font-size: 32px;      padding: 10px;
+
+    }      box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+
+        }
+
+    h1 {    
+
+      font-size: 28px;    .logo-x {
+
+      font-weight: 700;      font-size: 64px;
+
+      color: #1a202c;      font-weight: 900;
+
+      margin-bottom: 16px;      color: #FF0000;
+
+    }      font-family: Arial Black, sans-serif;
+
+          text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+
+    .flexcredit-logo {    }
+
+      max-width: 200px;    
+
+      height: auto;    h1 {
+
+      margin: 0 auto 8px;      font-size: 28px;
+
+    }      font-weight: 700;
+
+          color: #1a202c;
+
+    .subtitle {      margin-bottom: 4px;
+
+      color: #718096;    }
+
+      font-size: 14px;    
+
+    }    .brand {
+
+          font-size: 14px;
+
+    .flash {      color: #666;
+
+      background: #fed7d7;      font-weight: 500;
+
+      border-left: 4px solid #f56565;    }
+
+      color: #742a2a;    
+
+      padding: 14px 16px;    .subtitle {
+
+      border-radius: 8px;      color: #718096;
+
+      margin-bottom: 24px;      font-size: 14px;
+
+      font-size: 14px;    }
+
+      animation: shake 0.3s;    
+
+    }    .flash {
+
+          background: #fed7d7;
+
+    @keyframes shake {      border-left: 4px solid #f56565;
+
+      0%, 100% { transform: translateX(0); }      color: #742a2a;
+
+      25% { transform: translateX(-5px); }      padding: 14px 16px;
+
+      75% { transform: translateX(5px); }      border-radius: 8px;
+
+    }      margin-bottom: 24px;
+
+          font-size: 14px;
+
+    .form-group {      animation: shake 0.3s;
+
+      margin-bottom: 24px;    }
+
+    }    
+
+        @keyframes shake {
+
+    label {      0%, 100% { transform: translateX(0); }
+
+      display: block;      25% { transform: translateX(-5px); }
+
+      font-weight: 600;      75% { transform: translateX(5px); }
+
+      color: #2d3748;    }
+
+      margin-bottom: 8px;    
+
+      font-size: 14px;    .form-group {
+
+      letter-spacing: 0.3px;      margin-bottom: 24px;
+
+    }    }
+
+        
+
+    select, input[type=file] {    label {
+
+      width: 100%;      display: block;
+
+      padding: 12px 16px;      font-weight: 600;
+
+      border: 2px solid #e2e8f0;      color: #2d3748;
+
+      border-radius: 10px;      margin-bottom: 8px;
+
+      font-size: 15px;      font-size: 14px;
+
+      transition: all 0.2s;      letter-spacing: 0.3px;
+
+      background: white;    }
+
+      color: #2d3748;    
+
+    }    select, input[type=file] {
+
+          width: 100%;
+
+    select:focus, input[type=file]:focus {      padding: 12px 16px;
+
+      outline: none;      border: 2px solid #e2e8f0;
+
+      border-color: #FF0000;      border-radius: 10px;
+
+      box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.1);      font-size: 15px;
+
+    }      transition: all 0.2s;
+
+          background: white;
+
+    select {      color: #2d3748;
+
+      cursor: pointer;    }
+
+      appearance: none;    
+
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23FF0000' d='M6 9L1 4h10z'/%3E%3C/svg%3E");    select:focus, input[type=file]:focus {
+
+      background-repeat: no-repeat;      outline: none;
+
+      background-position: right 16px center;      border-color: #FF0000;
+
+      padding-right: 40px;      box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.1);
+
+    }    }
+
+        
+
+    input[type=file] {    select {
+
+      padding: 10px 16px;      cursor: pointer;
+
+      cursor: pointer;      appearance: none;
+
+    }      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23FF0000' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+
+          background-repeat: no-repeat;
+
+    input[type=file]::file-selector-button {      background-position: right 16px center;
+
+      background: #FF0000;      padding-right: 40px;
+
+      color: white;    }
+
+      border: none;    
+
+      padding: 8px 16px;    input[type=file] {
+
+      border-radius: 6px;      padding: 10px 16px;
+
+      cursor: pointer;      cursor: pointer;
+
+      font-weight: 600;    }
+
+      margin-right: 12px;    
+
+      transition: transform 0.2s;    input[type=file]::file-selector-button {
+
+    }      background: #FF0000;
+
+          color: white;
+
+    input[type=file]::file-selector-button:hover {      border: none;
+
+      transform: scale(1.05);      padding: 8px 16px;
+
+      background: #cc0000;      border-radius: 6px;
+
+    }      cursor: pointer;
+
+          font-weight: 600;
+
+    button {      margin-right: 12px;
+
+      width: 100%;      transition: transform 0.2s;
+
+      padding: 14px;    }
+
+      background: #FF0000;    
+
+      color: white;    input[type=file]::file-selector-button:hover {
+
+      border: none;      transform: scale(1.05);
+
+      border-radius: 10px;      background: #cc0000;
+
+      font-size: 16px;    }
+
+      font-weight: 600;    
+
+      cursor: pointer;    button {
+
+      transition: all 0.3s;      width: 100%;
+
+      box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4);      padding: 14px;
+
+    }      background: #FF0000;
+
+          color: white;
+
+    button:hover {      border: none;
+
+      transform: translateY(-2px);      border-radius: 10px;
+
+      box-shadow: 0 6px 20px rgba(255, 0, 0, 0.5);      font-size: 16px;
+
+      background: #cc0000;      font-weight: 600;
+
+    }      cursor: pointer;
+
+          transition: all 0.3s;
+
+    button:active {      box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4);
+
+      transform: translateY(0);    }
+
+    }    
+
+        button:hover {
+
+    .banks-list {      transform: translateY(-2px);
+
+      display: grid;      box-shadow: 0 6px 20px rgba(255, 0, 0, 0.5);
+
+      grid-template-columns: repeat(3, 1fr);      background: #cc0000;
+
+      gap: 8px;    }
+
+      margin-top: 8px;    
+
+    }    button:active {
+
+          transform: translateY(0);
+
+    .bank-badge {    }
+
+      background: #f7fafc;    
+
+      padding: 6px 10px;    .banks-list {
+
+      border-radius: 6px;      display: grid;
+
+      text-align: center;      grid-template-columns: repeat(3, 1fr);
+
+      font-size: 11px;      gap: 8px;
+
+      color: #4a5568;      margin-top: 8px;
+
+      font-weight: 500;    }
+
+    }    
+
+        .bank-badge {
+
+    .footer {      background: #f7fafc;
+
+      text-align: center;      padding: 6px 10px;
+
+      margin-top: 24px;      border-radius: 6px;
+
+      color: white;      text-align: center;
+
+      font-size: 13px;      font-size: 11px;
+
+      opacity: 0.9;      color: #4a5568;
+
+    }      font-weight: 500;
+
+        }
+
+    .footer img {    
+
+      max-width: 180px;    .footer {
+
+      height: auto;      text-align: center;
+
+      margin: 8px auto;      margin-top: 24px;
+
+      display: block;      color: white;
+
+    }      font-size: 13px;
+
+          opacity: 0.9;
+
+    @media (max-width: 480px) {    }
+
+      .card { padding: 28px 24px; }    
+
+      h1 { font-size: 24px; }    @media (max-width: 480px) {
+
+      .banks-list { grid-template-columns: repeat(2, 1fr); }      .card { padding: 28px 24px; }
+
+    }      h1 { font-size: 24px; }
+
+  </style>      .banks-list { grid-template-columns: repeat(2, 1fr); }
+
+</head>    }
+
+<body>  </style>
+
+  <div class="container"></head>
+
+    <div class="card"><body>
+
+      <div class="header">      <div class="header">
+
+        <div class="icon">📊</div>        <div class="logo-container">
+
+        <h1>APURE AQUI!</h1>          <div class="logo-x">X</div>
+
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 200'%3E%3Crect fill='%230000FF' width='800' height='200'/%3E%3Ctext x='50' y='130' font-family='Arial Black, sans-serif' font-size='80' font-weight='900' fill='white'%3EFLE%3C/text%3E%3Ctext x='240' y='130' font-family='Arial Black, sans-serif' font-size='80' font-weight='900' fill='%23FF0000'%3EX%3C/text%3E%3Ctext x='300' y='130' font-family='Arial Black, sans-serif' font-size='80' font-weight='900' fill='white'%3ECREDIT%3C/text%3E%3Crect x='72' y='145' width='470' height='8' fill='%23FF0000'/%3E%3Crect x='240' y='50' width='120' height='8' fill='%23FF0000'/%3E%3Ctext x='420' y='175' font-family='Arial, sans-serif' font-size='28' font-weight='700' fill='%23FF0000'%3EFINANCIAMENTOS%3C/text%3E%3C/svg%3E" alt="Flexcredit" class="flexcredit-logo">        </div>
+
+        <p class="subtitle">Extraia créditos dos seus extratos bancários</p>        <h1>APURE AQUI!</h1>
+
+      </div>        <p class="brand">by Flexcredit</p>
+
+        <p class="subtitle">Extraia créditos dos seus extratos bancários</p>
+
+      {% with messages = get_flashed_messages() %}      </div>Apuração de Extratos</h1>
+
+        {% if messages %}        <p class="subtitle">Extraia créditos dos seus extratos bancários</p>
+
+          {% for msg in messages %}      </div>
+
             <div class="flash">⚠️ {{ msg }}</div>
-          {% endfor %}
-        {% endif %}
-      {% endwith %}
 
-      <form action="{{ url_for('process') }}" method="post" enctype="multipart/form-data">
-        <div class="form-group">
-          <label for="bank">🏦 Selecione o Banco</label>
+          {% endfor %}      {% with messages = get_flashed_messages() %}
+
+        {% endif %}        {% if messages %}
+
+      {% endwith %}          {% for msg in messages %}
+
+            <div class="flash">⚠️ {{ msg }}</div>
+
+      <form action="{{ url_for('process') }}" method="post" enctype="multipart/form-data">          {% endfor %}
+
+        <div class="form-group">        {% endif %}
+
+          <label for="bank">🏦 Selecione o Banco</label>      {% endwith %}
+
           <select id="bank" name="bank" required>
-            <option value="" selected disabled>Escolha um banco...</option>
-            <option value="itau">Itaú</option>
-            <option value="santander">Santander</option>
-            <option value="nubank">Nubank</option>
-            <option value="picpay">PicPay</option>
-            <option value="mercadopago">Mercado Pago</option>
-          </select>
-          <div class="banks-list">
-            <div class="bank-badge">Itaú</div>
-            <div class="bank-badge">Santander</div>
-            <div class="bank-badge">Nubank</div>
+
+            <option value="" selected disabled>Escolha um banco...</option>      <form action="{{ url_for('process') }}" method="post" enctype="multipart/form-data">
+
+            <option value="itau">Itaú</option>        <div class="form-group">
+
+            <option value="santander">Santander</option>          <label for="bank">🏦 Selecione o Banco</label>
+
+            <option value="nubank">Nubank</option>          <select id="bank" name="bank" required>
+
+            <option value="picpay">PicPay</option>            <option value="" selected disabled>Escolha um banco...</option>
+
+            <option value="mercadopago">Mercado Pago</option>            <option value="itau">Itaú</option>
+
+          </select>            <option value="santander">Santander</option>
+
+          <div class="banks-list">            <option value="nubank">Nubank</option>
+
+            <div class="bank-badge">Itaú</div>            <option value="picpay">PicPay</option>
+
+            <div class="bank-badge">Santander</div>            <option value="mercadopago">Mercado Pago</option>
+
+            <div class="bank-badge">Nubank</div>          </select>
+
+            <div class="bank-badge">PicPay</div>          <div class="banks-list">
+
+            <div class="bank-badge">Mercado Pago</div>            <div class="bank-badge">Itaú</div>
+
+          </div>            <div class="bank-badge">Santander</div>
+
+        </div>            <div class="bank-badge">Nubank</div>
+
             <div class="bank-badge">PicPay</div>
-            <div class="bank-badge">Mercado Pago</div>
-          </div>
+
+        <div class="form-group">            <div class="bank-badge">Mercado Pago</div>
+
+          <label for="statement">📄 Arquivo do Extrato (PDF)</label>          </div>
+
+          <input type="file" id="statement" name="statement" accept="application/pdf" required>        </div>
+
         </div>
 
         <div class="form-group">
-          <label for="statement">📄 Arquivo do Extrato (PDF)</label>
-          <input type="file" id="statement" name="statement" accept="application/pdf" required>
-        </div>
-    <div class="footer">
-      <strong style="color: #FF0000;">APURE AQUI!</strong> by Flexcredit<br>
-      💡 Suporte: Itaú • Santander • Nubank • PicPay • Mercado Pago
-    </div>rm>
-    </div>
-    
-    <div class="footer">
-      💡 Suporte: Itaú • Santander • Nubank • PicPay • Mercado Pago
+
+        <button type="submit">✨ Processar Extrato</button>          <label for="statement">📄 Arquivo do Extrato (PDF)</label>
+
+      </form>          <input type="file" id="statement" name="statement" accept="application/pdf" required>
+
+    </div>        </div>
+
+        <div class="footer">
+
+    <div class="footer">      <strong style="color: #FF0000;">APURE AQUI!</strong> by Flexcredit<br>
+
+      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 200'%3E%3Crect fill='%230000FF' width='800' height='200'/%3E%3Ctext x='50' y='130' font-family='Arial Black, sans-serif' font-size='80' font-weight='900' fill='white'%3EFLE%3C/text%3E%3Ctext x='240' y='130' font-family='Arial Black, sans-serif' font-size='80' font-weight='900' fill='%23FF0000'%3EX%3C/text%3E%3Ctext x='300' y='130' font-family='Arial Black, sans-serif' font-size='80' font-weight='900' fill='white'%3ECREDIT%3C/text%3E%3Crect x='72' y='145' width='470' height='8' fill='%23FF0000'/%3E%3Crect x='240' y='50' width='120' height='8' fill='%23FF0000'/%3E%3Ctext x='420' y='175' font-family='Arial, sans-serif' font-size='28' font-weight='700' fill='%23FF0000'%3EFINANCIAMENTOS%3C/text%3E%3C/svg%3E" alt="Flexcredit">      💡 Suporte: Itaú • Santander • Nubank • PicPay • Mercado Pago
+
+      <div style="margin-top: 8px;">💡 Suporte: Itaú • Santander • Nubank • PicPay • Mercado Pago</div>    </div>rm>
+
+    </div>    </div>
+
+  </div>    
+
+</body>    <div class="footer">
+
+</html>      💡 Suporte: Itaú • Santander • Nubank • PicPay • Mercado Pago
+
     </div>
   </div>
 </body>
