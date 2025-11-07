@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Resultados - APURE AQUI! by Flexcredit</title>
+  <title>Resultados - APURE AQUI!</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     
@@ -13,6 +13,335 @@
       min-height: 100vh;
       padding: 40px 20px;
     }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .header {
+      background: white;
+      padding: 32px;
+      border-radius: 20px 20px 0 0;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      animation: slideDown 0.5s ease-out;
+    }
+    
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    
+    .icon {
+      width: 56px;
+      height: 56px;
+      background: #FF0000;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+    }
+    
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #1a202c;
+    }
+    
+    .subtitle {
+      color: #718096;
+      font-size: 14px;
+      margin-top: 4px;
+    }
+    
+    .flexcredit-logo {
+      max-width: 150px;
+      height: auto;
+      margin-top: 4px;
+    }
+    
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .btn-primary {
+      background: #FF0000;
+      color: white;
+      box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 0, 0, 0.5);
+      background: #cc0000;
+    }
+    
+    .btn-secondary {
+      background: #edf2f7;
+      color: #2d3748;
+    }
+    
+    .btn-secondary:hover {
+      background: #e2e8f0;
+      transform: translateY(-2px);
+    }
+    
+    .table-container {
+      background: white;
+      padding: 32px;
+      border-radius: 0 0 20px 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      animation: slideUp 0.6s ease-out;
+      overflow-x: auto;
+    }
+    
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      min-width: 700px;
+    }
+    
+    thead {
+      background: #f7fafc;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    
+    th {
+      padding: 16px 12px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 700;
+      color: #4a5568;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid #e2e8f0;
+    }
+    
+    td {
+      padding: 16px 12px;
+      border-bottom: 1px solid #f0f0f0;
+      color: #2d3748;
+      font-size: 14px;
+    }
+    
+    tbody tr {
+      transition: all 0.2s;
+    }
+    
+    tbody tr:hover {
+      background: #f7fafc;
+      transform: scale(1.01);
+    }
+    
+    .amount {
+      font-weight: 600;
+      color: #2f855a;
+      white-space: nowrap;
+      text-align: right;
+    }
+    
+    .copy-col {
+      font-family: 'Courier New', monospace;
+      color: #718096;
+      font-size: 13px;
+      text-align: right;
+    }
+    
+    .total-section {
+      background: white;
+      margin-top: 24px;
+      padding: 24px 32px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      animation: slideUp 0.7s ease-out;
+    }
+    
+    .total-label {
+      font-size: 16px;
+      color: #4a5568;
+      font-weight: 600;
+    }
+    
+    .total-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: #FF0000;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #718096;
+    }
+    
+    .empty-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+      opacity: 0.3;
+    }
+    
+    .footer-logo {
+      text-align: center;
+      margin-top: 24px;
+    }
+    
+    .footer-logo img {
+      max-width: 200px;
+      height: auto;
+    }
+    
+    @media (max-width: 768px) {
+      .header { padding: 24px 20px; }
+      .header-content { flex-direction: column; align-items: stretch; }
+      .header-left { flex-direction: column; align-items: center; text-align: center; }
+      .actions { justify-content: center; }
+      .table-container { padding: 20px; }
+      .total-section { flex-direction: column; gap: 12px; text-align: center; }
+      .total-value { font-size: 28px; }
+      h1 { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="header-content">
+        <div class="header-left">
+          <div class="icon">✅</div>
+          <div>
+            <h1>APURE AQUI!</h1>
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 200'%3E%3Crect fill='%230000FF' width='800' height='200'/%3E%3Ctext x='50' y='130' font-family='Arial Black, sans-serif' font-size='80' font-weight='900' fill='white'%3EFLE%3C/text%3E%3Ctext x='240' y='130' font-family='Arial Black, sans-serif' font-size='80' font-weight='900' fill='%23FF0000'%3EX%3C/text%3E%3Ctext x='300' y='130' font-family='Arial Black, sans-serif' font-size='80' font-weight='900' fill='white'%3ECREDIT%3C/text%3E%3Crect x='72' y='145' width='470' height='8' fill='%23FF0000'/%3E%3Crect x='240' y='50' width='120' height='8' fill='%23FF0000'/%3E%3Ctext x='420' y='175' font-family='Arial, sans-serif' font-size='28' font-weight='700' fill='%23FF0000'%3EFINANCIAMENTOS%3C/text%3E%3C/svg%3E" alt="Flexcredit" class="flexcredit-logo">
+            <p class="subtitle">{{ rows|length }} créditos encontrados</p>
+          </div>
+        </div>
+        <div class="actions">
+          <button id="copy-values" class="btn btn-primary">📋 Copiar Valores</button>
+          <a href="{{ url_for('index') }}" class="btn btn-secondary">← Voltar</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-container">
+      {% if rows %}
+        <table>
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Tipo</th>
+              <th>Descrição</th>
+              <th class="amount">Valor</th>
+              <th class="copy-col">Valor (copiar)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in rows %}
+            <tr>
+              <td>{{ r.date }}</td>
+              <td>{{ r.type }}</td>
+              <td>{{ r.description }}</td>
+              <td class="amount">{{ r.amount }}</td>
+              <td class="copy-col">{{ r.amount_plain }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <div class="empty-state">
+          <div class="empty-icon">📭</div>
+          <h3>Nenhum crédito encontrado</h3>
+          <p>Tente processar outro extrato</p>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="total-section">
+      <div class="total-label">💰 Total de Créditos</div>
+      <div class="total-value">{{ total }}</div>
+    </div>
+    
+    <div class="footer-logo">
+      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 200'%3E%3Crect fill='%230000FF' width='800' height='200'/%3E%3Ctext x='50' y='130' font-family='Arial Black, sans-serif' font-size='80' font-weight='900' fill='white'%3EFLE%3C/text%3E%3Ctext x='240' y='130' font-family='Arial Black, sans-serif' font-size='80' font-weight='900' fill='%23FF0000'%3EX%3C/text%3E%3Ctext x='300' y='130' font-family='Arial Black, sans-serif' font-size='80' font-weight='900' fill='white'%3ECREDIT%3C/text%3E%3Crect x='72' y='145' width='470' height='8' fill='%23FF0000'/%3E%3Crect x='240' y='50' width='120' height='8' fill='%23FF0000'/%3E%3Ctext x='420' y='175' font-family='Arial, sans-serif' font-size='28' font-weight='700' fill='%23FF0000'%3EFINANCIAMENTOS%3C/text%3E%3C/svg%3E" alt="Flexcredit">
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      const btn = document.getElementById('copy-values');
+      if (!btn) return;
+      btn.addEventListener('click', async () => {
+        const cells = Array.from(document.querySelectorAll('td.copy-col'));
+        const lines = cells.map(td => (td.textContent || '').trim()).filter(Boolean);
+        const text = lines.join('\n');
+        try {
+          await navigator.clipboard.writeText(text);
+          btn.textContent = '✓ Copiado!';
+          btn.style.background = '#48bb78';
+          setTimeout(() => {
+            btn.textContent = '📋 Copiar Valores';
+            btn.style.background = '';
+          }, 2000);
+        } catch (err) {
+          // Fallback: cria um textarea temporário
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          document.body.appendChild(ta);
+          ta.select();
+          try { document.execCommand('copy'); } catch(e){}
+          document.body.removeChild(ta);
+          btn.textContent = '✓ Copiado!';
+          btn.style.background = '#48bb78';
+          setTimeout(() => {
+            btn.textContent = '📋 Copiar Valores';
+            btn.style.background = '';
+          }, 2000);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
     
     .container {
       max-width: 1200px;
