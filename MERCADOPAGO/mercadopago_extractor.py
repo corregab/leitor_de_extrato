@@ -32,10 +32,10 @@ class MercadoPagoExtractor:
     AMOUNT_PATTERN = re.compile(r'R\$\s*([-]?\d{1,3}(?:\.\d{3})*,\d{2})')
     
     # Palavras-chave para identificar créditos
-    CREDIT_KEYWORDS = ['RENDIMENTOS', 'RENDIMENTO', 'PIX RECEBIDO', 'RECEBIDO', 'TRANSFERÊNCIA RECEBIDA', 'TRANSFERENCIA RECEBIDA', 'DEPOSITO', 'DEPÓSITO']
+    CREDIT_KEYWORDS = ['PIX RECEBIDA', 'PIX RECEBIDO', 'RECEBIDA', 'RECEBIDO', 'TRANSFERÊNCIA RECEBIDA', 'TRANSFERENCIA RECEBIDA', 'DINHEIRO RECEBIDO']
     
-    # Palavras-chave para excluir (débitos)
-    DEBIT_KEYWORDS = ['PIX ENVIADA', 'ENVIADO', 'ENVIADA', 'PAGAMENTO', 'COMPRA', 'SAQUE', 'TARIFA', 'TAXA']
+    # Palavras-chave para excluir (débitos e rendimentos)
+    DEBIT_KEYWORDS = ['PIX ENVIADA', 'ENVIADO', 'ENVIADA', 'PAGAMENTO', 'COMPRA', 'SAQUE', 'TARIFA', 'TAXA', 'RENDIMENTOS', 'RENDIMENTO']
     
     # Palavras de resumo/totais para excluir
     SUMMARY_KEYWORDS = ['ENTRADAS:', 'SAIDAS:', 'SALDO INICIAL', 'SALDO FINAL', 'TOTAL']
@@ -79,62 +79,74 @@ class MercadoPagoExtractor:
                     continue
                 
                 lines = text.splitlines()
-                for line in lines:
-                    line = line.strip()
+                i = 0
+                while i < len(lines):
+                    line = lines[i].strip()
                     if not line:
+                        i += 1
                         continue
                     
-                    # Verifica se é linha de crédito
-                    if not self.is_credit_line(line):
-                        continue
-                    
-                    # Extrai data
-                    date_match = self.DATE_PATTERN.search(line)
-                    if not date_match:
-                        continue
-                    date = date_match.group(1)
-                    
-                    # Extrai valor
-                    amount_match = self.AMOUNT_PATTERN.search(line)
-                    if not amount_match:
-                        continue
-                    
-                    try:
-                        amount = self.parse_amount(amount_match.group(1))
-                    except (ValueError, InvalidOperation):
-                        continue
-                    
-                    # Só aceita valores positivos (créditos)
-                    if amount <= 0:
-                        continue
-                    
-                    # Identifica tipo de transação
                     line_upper = line.upper()
+                    
+                    # Pula linhas de resumo/totais
+                    if any(kw in line_upper for kw in self.SUMMARY_KEYWORDS):
+                        i += 1
+                        continue
+                    
+                    # Pula rendimentos
                     if 'RENDIMENTO' in line_upper:
-                        transaction_type = 'RENDIMENTO'
-                    elif 'PIX' in line_upper and 'RECEBID' in line_upper:
-                        transaction_type = 'PIX RECEBIDO'
-                    elif 'TRANSFER' in line_upper and 'RECEBID' in line_upper:
-                        transaction_type = 'TRANSFERÊNCIA'
-                    else:
-                        transaction_type = 'CRÉDITO'
+                        i += 1
+                        continue
                     
-                    # Monta descrição
-                    description = line
-                    # Remove valor e data da descrição
-                    description = self.AMOUNT_PATTERN.sub('', description)
-                    description = self.DATE_PATTERN.sub('', description)
-                    description = re.sub(r'\d{10,}', '', description)  # Remove IDs longos
-                    description = re.sub(r'\s+', ' ', description).strip()
+                    # Caso especial: "Transferência Pix recebida" ou "Dinheiro recebido"
+                    # aparece em uma linha, e o valor na linha seguinte
+                    if 'TRANSFERÊNCIA PIX RECEBIDA' in line_upper or 'TRANSFERENCIA PIX RECEBIDA' in line_upper or 'DINHEIRO RECEBIDO' in line_upper:
+                        # Pega a próxima linha que deve conter data e valor
+                        if i + 1 < len(lines):
+                            value_line = lines[i + 1].strip()
+                            
+                            # Extrai data
+                            date_match = self.DATE_PATTERN.search(value_line)
+                            if date_match:
+                                date = date_match.group(1)
+                                
+                                # Extrai valor
+                                amount_match = self.AMOUNT_PATTERN.search(value_line)
+                                if amount_match:
+                                    try:
+                                        amount = self.parse_amount(amount_match.group(1))
+                                        
+                                        # Só aceita valores positivos
+                                        if amount > 0:
+                                            # Identifica tipo
+                                            if 'PIX RECEBIDA' in line_upper:
+                                                transaction_type = 'PIX RECEBIDO'
+                                            elif 'DINHEIRO RECEBIDO' in line_upper:
+                                                transaction_type = 'DINHEIRO RECEBIDO'
+                                            else:
+                                                transaction_type = 'TRANSFERÊNCIA RECEBIDA'
+                                            
+                                            # Monta descrição
+                                            description = value_line
+                                            description = self.AMOUNT_PATTERN.sub('', description)
+                                            description = self.DATE_PATTERN.sub('', description)
+                                            description = re.sub(r'\d{10,}', '', description)
+                                            description = re.sub(r'\s+', ' ', description).strip()
+                                            
+                                            credits.append(MercadoPagoTransaction(
+                                                date=date,
+                                                description=description or transaction_type,
+                                                amount=amount,
+                                                transaction_type=transaction_type,
+                                                raw_line=value_line,
+                                                page=page_num
+                                            ))
+                                    except (ValueError, InvalidOperation):
+                                        pass
+                            i += 2  # Pula a linha atual e a próxima
+                            continue
                     
-                    credits.append(MercadoPagoTransaction(
-                        date=date,
-                        description=description or transaction_type,
-                        amount=amount,
-                        transaction_type=transaction_type,
-                        raw_line=line,
-                        page=page_num
-                    ))
+                    i += 1
         
         return credits
 
