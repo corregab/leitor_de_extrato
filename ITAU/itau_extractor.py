@@ -44,7 +44,8 @@ class ItauExtractParser:
     
     # Padrões de expressões regulares para extração
     # Aceita datas nos formatos dd/mm/aaaa e dd/mm/aa (alguns PDFs variam)
-    DATE_PATTERN = re.compile(r'(\d{2}/\d{2}/(?:\d{2}|\d{4}))')
+    # Prioriza ano com 4 dígitos; aceita também com 2 dígitos
+    DATE_PATTERN = re.compile(r'(\d{2}/\d{2}/(?:\d{4}|\d{2}))')
     AMOUNT_PATTERN = re.compile(r'(\d{1,3}(?:\.\d{3})*,\d{2})')
     
     # Tipos de transação que representam créditos
