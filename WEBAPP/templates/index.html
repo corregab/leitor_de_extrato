@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Apuração de Extratos Bancários</title>
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     
@@ -214,6 +215,24 @@
     }
     .flex-badge span { color: #ffffff; opacity: 0.95; }
     .flexcredit-logo { height: 20px; width: auto; display: block; }
+    .total-badge {
+      margin-top: 16px;
+      display: flex;
+      justify-content: center;
+    }
+    .badge-inline {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #f7fafc;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #2d3748;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    }
+    .badge-inline svg { height: 16px; }
     
     @media (max-width: 480px) {
       .card { padding: 28px 24px; }
@@ -272,6 +291,17 @@
         </div>
 
         <button type="submit">✨ Processar Extrato</button>
+        <div class="total-badge">
+          <div class="badge-inline" aria-label="Flexcredit marca">
+            <span>Flexcredit</span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 20" role="img">
+              <text x="0" y="15" font-family="Arial Black, sans-serif" font-size="14" fill="#0000FF">FLE</text>
+              <text x="30" y="15" font-family="Arial Black, sans-serif" font-size="14" fill="#FF0000">X</text>
+              <rect x="0" y="16" width="42" height="2" fill="#FF0000"/>
+              <text x="40" y="15" font-family="Arial Black, sans-serif" font-size="14" fill="#0000FF">CREDIT</text>
+            </svg>
+          </div>
+        </div>
       </form>
     </div>
     
