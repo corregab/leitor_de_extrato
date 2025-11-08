@@ -243,6 +243,36 @@
     }
     .flexcredit-logo { height: 18px; width: auto; display: block; }
     .label-with-brand { display: flex; flex-direction: column; gap: 6px; }
+    
+    /* Search box */
+    .search-box {
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .search-box input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 15px;
+      transition: all 0.2s;
+    }
+    .search-box input:focus {
+      outline: none;
+      border-color: #0000FF;
+      box-shadow: 0 0 0 3px rgba(0, 0, 255, 0.1);
+    }
+    .search-info {
+      color: #718096;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .highlight {
+      background: #fef08a;
+      font-weight: 600;
+    }
   </style>
 </head>
 <body>
@@ -285,7 +315,12 @@
       {% endwith %}
 
       {% if rows %}
-        <table>
+        <div class="search-box">
+          <input type="text" id="search-input" placeholder="🔍 Buscar transação (nome, valor, data, tipo...)">
+          <span class="search-info" id="search-info">{{ rows|length }} resultado(s)</span>
+        </div>
+        
+        <table id="transactions-table">
           <thead>
             <tr>
               <th>Data</th>
@@ -376,6 +411,31 @@
           }, 2000);
         }
       });
+      
+      // Search functionality
+      const searchInput = document.getElementById('search-input');
+      const searchInfo = document.getElementById('search-info');
+      const table = document.getElementById('transactions-table');
+      const rows = table ? Array.from(table.querySelectorAll('tbody tr')) : [];
+      
+      if (searchInput && rows.length > 0) {
+        searchInput.addEventListener('input', function() {
+          const query = this.value.toLowerCase().trim();
+          let visibleCount = 0;
+          
+          rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            if (!query || text.includes(query)) {
+              row.style.display = '';
+              visibleCount++;
+            } else {
+              row.style.display = 'none';
+            }
+          });
+          
+          searchInfo.textContent = `${visibleCount} resultado(s)`;
+        });
+      }
     })();
   </script>
 </body>
