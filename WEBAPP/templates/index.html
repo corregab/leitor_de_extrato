@@ -101,7 +101,24 @@
       color: #2d3748;
     }
     
+    input[type=text] {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 15px;
+      transition: all 0.2s;
+      background: white;
+      color: #2d3748;
+    }
+    
     select:focus, input[type=file]:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    input[type=text]:focus {
       outline: none;
       border-color: #667eea;
       box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
@@ -231,6 +248,14 @@
         <div class="form-group">
           <label for="statement">📄 Arquivo do Extrato (PDF)</label>
           <input type="file" id="statement" name="statement" accept="application/pdf" required>
+        </div>
+
+        <div class="form-group">
+          <label for="exclude_names">🚫 Nomes para Excluir (opcional)</label>
+          <input type="text" id="exclude_names" name="exclude_names" placeholder="Ex: João Silva, Maria Santos">
+          <small style="color: #718096; font-size: 12px; margin-top: 4px; display: block;">
+            Digite os nomes separados por vírgula. Transações com esses nomes serão ignoradas.
+          </small>
         </div>
 
         <button type="submit">✨ Processar Extrato</button>

@@ -249,6 +249,16 @@
     </div>
 
     <div class="table-container">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, msg in messages %}
+            <div style="background: #bee3f8; border-left: 4px solid #3182ce; color: #2c5282; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 14px;">
+              ℹ️ {{ msg }}
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
       {% if rows %}
         <table>
           <thead>
