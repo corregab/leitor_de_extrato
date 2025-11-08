@@ -43,13 +43,15 @@ class ItauExtractParser:
     """Parser especializado para extratos do Itaú."""
     
     # Padrões de expressões regulares para extração
-    DATE_PATTERN = re.compile(r'(\d{2}/\d{2}/\d{4})')
+    # Aceita datas nos formatos dd/mm/aaaa e dd/mm/aa (alguns PDFs variam)
+    DATE_PATTERN = re.compile(r'(\d{2}/\d{2}/(?:\d{2}|\d{4}))')
     AMOUNT_PATTERN = re.compile(r'(\d{1,3}(?:\.\d{3})*,\d{2})')
     
     # Tipos de transação que representam créditos
     CREDIT_TYPES = {
         'PIX QRS': 'PIX',
         'PIX TRANSF': 'PIX',
+        'PIX RECEBIDO': 'PIX',
         'TED RECEBIDA': 'TED',
         'DOC RECEBIDO': 'DOC',
         'DEPOSITO': 'DEPÓSITO'
@@ -104,44 +106,68 @@ class ItauExtractParser:
                 return type_name
         return 'OUTROS'
 
-    def parse_line(self, line: str, page: int, page_obj=None) -> Optional[CreditEntry]:
+    def parse_line(self, line: str, page: int, page_obj=None, debug=False) -> Optional[CreditEntry]:
         """
         Analisa uma linha do extrato e retorna uma entrada de crédito se for válida.
         """
+        if debug:
+            print(f"[DEBUG] Analisando linha: {line[:100]}")
+            
         if not self.is_credit_line(line):
+            if debug:
+                print(f"[DEBUG] ❌ Não é linha de crédito")
             return None
 
         # Extrai a data
         date_match = self.DATE_PATTERN.search(line)
         if not date_match:
+            if debug:
+                print(f"[DEBUG] ❌ Data não encontrada")
             return None
         date = date_match.group(1)
+        # Normaliza ano com 2 dígitos para 20YY
+        # Ex.: 02/06/25 -> 02/06/2025
+        if len(date.split('/')[-1]) == 2:
+            d, m, yy = date.split('/')
+            date = f"{d}/{m}/20{yy}"
 
         # Extrai o valor
         amount_match = self.AMOUNT_PATTERN.search(line)
         if not amount_match:
+            if debug:
+                print(f"[DEBUG] ❌ Valor não encontrado")
             return None
         
         try:
             amount = self.parse_amount(amount_match.group(1))
         except (ValueError, InvalidOperation):
+            if debug:
+                print(f"[DEBUG] ❌ Erro ao converter valor")
             return None
 
         # Detecta se há um sinal de menos imediatamente antes do valor no texto bruto
         # (ex.: "-27,00" ou "- 27,00"). Nesse caso trata como débito e ignora.
         amt_text = amount_match.group(1)
         if re.search(r'[-−]\s*' + re.escape(amt_text), line):
+            if debug:
+                print(f"[DEBUG] ❌ Encontrado sinal de menos antes do valor")
             return None
 
+        # Identifica o tipo de transação ANTES de checar cor
+        transaction_type = self.get_transaction_type(line)
+        is_known_credit_type = (transaction_type != 'OUTROS')
+
         # Se disponível, tenta inferir a cor do texto do valor na página PDF.
-        # Se a cor indicar vermelho, trata como débito (retorna None).
-        if page_obj is not None:
+        # IMPORTANTE: Se for um tipo conhecido de crédito (PIX, TED, etc.), 
+        # NÃO ignora mesmo se estiver vermelho, pois pode ser erro de formatação do PDF.
+        if page_obj is not None and not is_known_credit_type:
             try:
                 amt_text = amount_match.group(1)
                 color = self._find_color_for_text_on_page(page_obj, amt_text)
                 if color is not None:
                     if self._is_red(color):
                         # Texto em vermelho = saída (não é crédito)
+                        # MAS só ignora se NÃO for um tipo conhecido de crédito
                         return None
                     # if green -> prefer credit (continue)
             except Exception:
@@ -152,8 +178,7 @@ class ItauExtractParser:
         if amount <= 0:
             return None
 
-        # Obtém o tipo de transação e a descrição limpa
-        transaction_type = self.get_transaction_type(line)
+        # Obtém a descrição limpa
         description = self.clean_description(line)
 
         return CreditEntry(
