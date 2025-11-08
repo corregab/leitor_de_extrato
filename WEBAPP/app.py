@@ -187,6 +187,16 @@ def process():
                     'date': e.date,
                     'type': e.transaction_type,
                     'description': e.description,
+                    'amount': f"R$ {str(amt).replace('.', ',')}",
+                    'amount_plain': str(amt).replace('.', ',')
+                })
+            total_str = f"R$ {str(total.quantize(Decimal('.01'))).replace('.', ',')}"
+            
+            if excluded_count > 0:
+                flash(f'{excluded_count} transação(ões) excluída(s) pelos nomes informados.', 'info')
+            
+            return render_template('results.html', bank_label='Nubank', rows=rows, total=total_str)
+
         elif bank == 'picpay':
             if PicPayExtractor is None:
                 raise RuntimeError('Módulo PICPAY.picpay_extractor não disponível')
@@ -217,7 +227,7 @@ def process():
                 flash(f'{excluded_count} transação(ões) excluída(s) pelos nomes informados.', 'info')
             
             return render_template('results.html', bank_label='PicPay', rows=rows, total=total_str)
-                total += amt
+
         elif bank == 'mercadopago':
             if MercadoPagoExtractor is None:
                 raise RuntimeError('Módulo MERCADOPAGO.mercadopago_extractor não disponível')
@@ -247,16 +257,6 @@ def process():
             if excluded_count > 0:
                 flash(f'{excluded_count} transação(ões) excluída(s) pelos nomes informados.', 'info')
             
-            return render_template('results.html', bank_label='Mercado Pago', rows=rows, total=total_str)
-                total += amt
-                rows.append({
-                    'date': e.date,
-                    'type': e.transaction_type,
-                    'description': e.description,
-                    'amount': f"R$ {str(amt).replace('.', ',')}",
-                    'amount_plain': str(amt).replace('.', ',')
-                })
-            total_str = f"R$ {str(total.quantize(Decimal('.01'))).replace('.', ',')}"
             return render_template('results.html', bank_label='Mercado Pago', rows=rows, total=total_str)
 
         else:
