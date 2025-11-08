@@ -203,6 +203,17 @@
       font-size: 13px;
       opacity: 0.9;
     }
+    .flex-badge {
+      margin-top: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.1);
+      padding: 6px 10px;
+      border-radius: 8px;
+    }
+    .flex-badge span { color: #ffffff; opacity: 0.95; }
+    .flexcredit-logo { height: 20px; width: auto; display: block; }
     
     @media (max-width: 480px) {
       .card { padding: 28px 24px; }
@@ -266,6 +277,16 @@
     
     <div class="footer">
       💡 Suporte: Itaú • Santander • Nubank • PicPay • Mercado Pago
+      <div class="flex-badge" aria-label="by Flexcredit">
+        <span>by</span>
+        <svg class="flexcredit-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 28" role="img" aria-label="Flexcredit">
+          <title>Flexcredit</title>
+          <text x="0" y="20" font-family="Arial Black, sans-serif" font-size="20" fill="#0000FF">FLE</text>
+          <text x="45" y="20" font-family="Arial Black, sans-serif" font-size="20" fill="#FF0000">X</text>
+          <rect x="0" y="22" width="70" height="3" fill="#FF0000"/>
+          <text x="60" y="20" font-family="Arial Black, sans-serif" font-size="20" fill="#0000FF">CREDIT</text>
+        </svg>
+      </div>
     </div>
   </div>
 </body>
