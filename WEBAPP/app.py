@@ -63,19 +63,26 @@ def add_security_headers(response):
 # Error handlers
 @app.errorhandler(404)
 def not_found_error(error):
-    return render_template('index.html'), 404
+    return render_template('error.html', 
+                         error_code=404,
+                         error_emoji='🔍',
+                         error_title='Página Não Encontrada',
+                         error_message='A página que você está procurando não existe. Verifique o endereço e tente novamente.'), 404
 
 
 @app.errorhandler(413)
 def request_entity_too_large(error):
-    flash('Arquivo muito grande. O tamanho máximo permitido é 16 MB.')
+    flash('Arquivo muito grande. O tamanho máximo permitido é 16 MB por arquivo.')
     return redirect(url_for('index'))
 
 
 @app.errorhandler(500)
 def internal_error(error):
-    flash('Ocorreu um erro interno. Por favor, tente novamente.')
-    return redirect(url_for('index'))
+    return render_template('error.html',
+                         error_code=500,
+                         error_emoji='⚠️',
+                         error_title='Erro Interno',
+                         error_message='Ocorreu um erro inesperado. Nossa equipe foi notificada. Por favor, tente novamente em alguns instantes.'), 500
 
 
 def allowed_file(filename: str) -> bool:
