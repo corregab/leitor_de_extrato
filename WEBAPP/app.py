@@ -5,7 +5,7 @@ import uuid
 from decimal import Decimal, ROUND_DOWN
 from typing import List, Dict, Any
 
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, abort, send_from_directory
 
 import sys
 
@@ -42,6 +42,7 @@ except Exception:
 
 UPLOAD_DIR = os.path.join(BASE_DIR, 'uploads')
 ALLOWED_EXTENSIONS = {'.pdf'}
+MAX_FILES = 10  # Maximum number of files that can be uploaded at once
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('FLASK_SECRET_KEY', 'dev-secret-change-in-production')
@@ -49,7 +50,50 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_DIR
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
 
+# Security headers
+@app.after_request
+def add_security_headers(response):
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'DENY'
+    response.headers['X-XSS-Protection'] = '1; mode=block'
+    response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+    return response
+
+
+# Error handlers
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('error.html', 
+                         error_code=404,
+                         error_emoji='🔍',
+                         error_title='Página Não Encontrada',
+                         error_message='A página que você está procurando não existe. Verifique o endereço e tente novamente.'), 404
+
+
+@app.errorhandler(413)
+def request_entity_too_large(error):
+    flash('Arquivo muito grande. O tamanho máximo permitido é 16 MB por arquivo.')
+    return redirect(url_for('index'))
+
+
+@app.errorhandler(500)
+def internal_error(error):
+    return render_template('error.html',
+                         error_code=500,
+                         error_emoji='⚠️',
+                         error_title='Erro Interno',
+                         error_message='Ocorreu um erro inesperado. Nossa equipe foi notificada. Por favor, tente novamente em alguns instantes.'), 500
+
+
 def allowed_file(filename: str) -> bool:
+    """Validate if the file has an allowed extension and safe filename"""
+    if not filename:
+        return False
+    
+    # Check for path traversal attempts
+    if '..' in filename or '/' in filename or '\\' in filename:
+        return False
+    
     _, ext = os.path.splitext(filename.lower())
     return ext in ALLOWED_EXTENSIONS
 
@@ -70,6 +114,18 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/health', methods=['GET'])
+def health_check():
+    """Health check endpoint for monitoring"""
+    return {'status': 'healthy', 'service': 'leitor-extrato'}, 200
+
+
+@app.route('/robots.txt')
+def robots_txt():
+    """Serve robots.txt for SEO"""
+    return send_from_directory(app.static_folder, 'robots.txt')
+
+
 @app.route('/process', methods=['POST'])
 def process():
     bank = request.form.get('bank')
@@ -86,6 +142,12 @@ def process():
 
     if not files or all(f.filename == '' for f in files):
         flash('Selecione pelo menos um arquivo PDF para enviar.')
+        return redirect(url_for('index'))
+    
+    # Check number of files
+    valid_files = [f for f in files if f.filename]
+    if len(valid_files) > MAX_FILES:
+        flash(f'Você pode enviar no máximo {MAX_FILES} arquivos por vez.')
         return redirect(url_for('index'))
 
     for f in files:
@@ -235,7 +297,16 @@ def process():
         return render_template('results.html', bank_label=bank_label, rows=all_rows, total=total_str)
 
     except Exception as exc:
-        flash(f'Erro ao processar: {exc}')
+        import traceback
+        error_msg = str(exc)
+        if app.debug:
+            # In debug mode, show more details
+            flash(f'Erro ao processar: {error_msg}')
+            app.logger.error(f'Processing error: {traceback.format_exc()}')
+        else:
+            # In production, show user-friendly message
+            flash('Erro ao processar o extrato. Verifique se o arquivo está correto e tente novamente.')
+            app.logger.error(f'Processing error: {error_msg}')
         return redirect(url_for('index'))
     finally:
         for fp in filepaths:
