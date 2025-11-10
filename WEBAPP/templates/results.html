@@ -126,6 +126,44 @@
       to { opacity: 1; transform: translateY(0); }
     }
     
+    .flash-info {
+      background: #bee3f8;
+      border-left: 4px solid #3182ce;
+      color: #2c5282;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+    
+    .search-box {
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .search-box input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 15px;
+      transition: all 0.2s;
+    }
+    
+    .search-box input:focus {
+      outline: none;
+      border-color: #0000FF;
+      box-shadow: 0 0 0 3px rgba(0, 0, 255, 0.1);
+    }
+    
+    .search-info {
+      color: #718096;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
     table {
       width: 100%;
       border-collapse: separate;
@@ -198,11 +236,11 @@
       color: #4a5568;
       font-weight: 600;
     }
+    
     .total-value {
       font-size: 32px;
       font-weight: 700;
       color: #FF0000;
-    } background-clip: text;
     }
     
     .empty-state {
@@ -217,18 +255,6 @@
       opacity: 0.3;
     }
     
-    @media (max-width: 768px) {
-      .header { padding: 24px 20px; }
-      .header-content { flex-direction: column; align-items: stretch; }
-      .header-left { flex-direction: column; align-items: center; text-align: center; }
-      .actions { justify-content: center; }
-      .table-container { padding: 20px; }
-      .total-section { flex-direction: column; gap: 12px; text-align: center; }
-      .total-value { font-size: 28px; }
-      h1 { font-size: 24px; }
-    }
-
-    /* Flexcredit brand badge */
     .flex-badge {
       display: inline-flex;
       align-items: center;
@@ -241,37 +267,37 @@
       margin-top: 6px;
       width: fit-content;
     }
-    .flexcredit-logo { height: 18px; width: auto; display: block; }
-    .label-with-brand { display: flex; flex-direction: column; gap: 6px; }
     
-    /* Search box */
-    .search-box {
-      margin-bottom: 20px;
+    .flexcredit-logo {
+      height: 18px;
+      width: auto;
+      display: block;
+    }
+    
+    .label-with-brand {
       display: flex;
-      align-items: center;
-      gap: 12px;
+      flex-direction: column;
+      gap: 6px;
     }
-    .search-box input {
-      flex: 1;
-      padding: 12px 16px;
-      border: 2px solid #e2e8f0;
-      border-radius: 10px;
-      font-size: 15px;
-      transition: all 0.2s;
+    
+    @media (max-width: 768px) {
+      .header { padding: 24px 20px; }
+      .header-content { flex-direction: column; align-items: stretch; }
+      .header-left { flex-direction: column; align-items: center; text-align: center; }
+      .actions { justify-content: center; }
+      .table-container { padding: 20px; }
+      .total-section { flex-direction: column; gap: 12px; text-align: center; }
+      .total-value { font-size: 28px; }
+      h1 { font-size: 24px; }
     }
-    .search-box input:focus {
-      outline: none;
-      border-color: #0000FF;
-      box-shadow: 0 0 0 3px rgba(0, 0, 255, 0.1);
-    }
-    .search-info {
-      color: #718096;
-      font-size: 14px;
-      font-weight: 500;
-    }
-    .highlight {
-      background: #fef08a;
-      font-weight: 600;
+    
+    @media print {
+      body { background: white; padding: 20px; }
+      .header { box-shadow: none; border: 1px solid #e2e8f0; }
+      .actions, .search-box { display: none !important; }
+      .table-container { box-shadow: none; border: 1px solid #e2e8f0; }
+      tbody tr:hover { transform: none; background: transparent; }
+      .copy-col { display: none; }
     }
   </style>
 </head>
@@ -282,7 +308,7 @@
         <div class="header-left">
           <div class="icon">✅</div>
           <div>
-            <h1>Resultados</h1>
+            <h1>Resultados - {{ bank_label }}</h1>
             <p class="subtitle">{{ rows|length }} créditos encontrados</p>
             <div class="flex-badge" aria-label="by Flexcredit">
               <span>by</span>
@@ -298,6 +324,7 @@
         </div>
         <div class="actions">
           <button id="copy-values" class="btn btn-primary">📋 Copiar Valores</button>
+          <button onclick="window.print()" class="btn btn-secondary">🖨️ Imprimir</button>
           <a href="{{ url_for('index') }}" class="btn btn-secondary">← Voltar</a>
         </div>
       </div>
@@ -307,44 +334,23 @@
       {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
           {% for category, msg in messages %}
-            <div style="background: #bee3f8; border-left: 4px solid #3182ce; color: #2c5282; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 14px;">
-              {% if rows %}
-                <div class="search-box">
-                  <input type="text" id="search-input" placeholder="🔍 Buscar transação (nome, valor, data, tipo...)">
-                  <span class="search-info" id="search-info">{{ rows|length }} resultado(s)</span>
-                </div>
-                <div style="margin-bottom: 18px; display: flex; gap: 12px; align-items: center;">
-                  <label for="month-filter" style="font-weight:600;">Filtrar por mês:</label>
-                  <select id="month-filter" style="padding:8px 16px; border-radius:8px; font-size:15px;">
-                    <option value="">Todos</option>
-                    {% for mes in meses %}
-                      <option value="{{ mes }}">{{ mes }}</option>
-                    {% endfor %}
-                  </select>
-                  <button id="copy-month-values" class="btn btn-secondary" style="padding:8px 16px;">📋 Copiar Valores do Mês</button>
-                </div>
-                <table id="transactions-table">
-                  <thead>
-                    <tr>
-                      <th>Data</th>
-                      <th>Tipo</th>
-                      <th>Descrição</th>
-                      <th class="amount">Valor</th>
-                      <th class="copy-col">Valor (copiar)</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {% for r in rows %}
-                    <tr data-month="{{ r.month }}">
-                      <td>{{ r.date }}</td>
-                      <td>{{ r.type }}</td>
-                      <td>{{ r.description }}</td>
-                      <td class="amount">{{ r.amount }}</td>
-                      <td class="copy-col">{{ r.amount_plain }}</td>
-                    </tr>
-                    {% endfor %}
-                  </tbody>
-                </table>
+            <div class="flash-info">ℹ️ {{ msg }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      {% if rows %}
+        <div class="search-box">
+          <input type="text" id="search-input" placeholder="🔍 Buscar transação (nome, valor, data, tipo...)">
+          <span class="search-info" id="search-info">{{ rows|length }} resultado(s)</span>
+        </div>
+        
+        <table id="transactions-table">
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Tipo</th>
+              <th>Descrição</th>
               <th class="amount">Valor</th>
               <th class="copy-col">Valor (copiar)</th>
             </tr>
@@ -354,141 +360,44 @@
             <tr>
               <td>{{ r.date }}</td>
               <td>{{ r.type }}</td>
-              <script>
-                (function(){
-                  const btn = document.getElementById('copy-values');
-                  const btnMonth = document.getElementById('copy-month-values');
-                  const monthFilter = document.getElementById('month-filter');
-                  const table = document.getElementById('transactions-table');
-                  const rows = table ? Array.from(table.querySelectorAll('tbody tr')) : [];
+              <td>{{ r.description }}</td>
+              <td class="amount">{{ r.amount }}</td>
+              <td class="copy-col">{{ r.amount_plain }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <div class="empty-state">
+          <div class="empty-icon">📭</div>
+          <p>Nenhuma transação encontrada.</p>
+        </div>
+      {% endif %}
+    </div>
 
-                  // Copiar todos os valores
-                  if (btn) {
-                    btn.addEventListener('click', async () => {
-                      const cells = Array.from(document.querySelectorAll('td.copy-col'));
-                      const lines = cells.map(td => (td.textContent || '').trim()).filter(Boolean);
-                      const text = lines.join('\n');
-                      try {
-                        await navigator.clipboard.writeText(text);
-                        btn.textContent = '✓ Copiado!';
-                        btn.style.background = '#48bb78';
-                        setTimeout(() => {
-                          btn.textContent = '📋 Copiar Valores';
-                          btn.style.background = '';
-                        }, 2000);
-                      } catch (err) {
-                        const ta = document.createElement('textarea');
-                        ta.value = text;
-                        document.body.appendChild(ta);
-                        ta.select();
-                        try { document.execCommand('copy'); } catch(e){}
-                        document.body.removeChild(ta);
-                        btn.textContent = '✓ Copiado!';
-                        btn.style.background = '#48bb78';
-                        setTimeout(() => {
-                          btn.textContent = '📋 Copiar Valores';
-                          btn.style.background = '';
-                        }, 2000);
-                      }
-                    });
-                  }
+    <div class="total-section">
+      <div class="total-label">💰 Total de Créditos</div>
+      <div class="total-value">{{ total }}</div>
+    </div>
+  </div>
 
-                  // Copiar valores do mês filtrado
-                  if (btnMonth && monthFilter) {
-                    btnMonth.addEventListener('click', async () => {
-                      const selectedMonth = monthFilter.value;
-                      let filteredCells;
-                      if (!selectedMonth) {
-                        filteredCells = Array.from(document.querySelectorAll('td.copy-col'));
-                      } else {
-                        filteredCells = rows.filter(row => row.getAttribute('data-month') === selectedMonth)
-                          .map(row => row.querySelector('td.copy-col'));
-                      }
-                      const lines = filteredCells.map(td => (td.textContent || '').trim()).filter(Boolean);
-                      const text = lines.join('\n');
-                      try {
-                        await navigator.clipboard.writeText(text);
-                        btnMonth.textContent = '✓ Copiado!';
-                        btnMonth.style.background = '#48bb78';
-                        setTimeout(() => {
-                          btnMonth.textContent = '📋 Copiar Valores do Mês';
-                          btnMonth.style.background = '';
-                        }, 2000);
-                      } catch (err) {
-                        const ta = document.createElement('textarea');
-                        ta.value = text;
-                        document.body.appendChild(ta);
-                        ta.select();
-                        try { document.execCommand('copy'); } catch(e){}
-                        document.body.removeChild(ta);
-                        btnMonth.textContent = '✓ Copiado!';
-                        btnMonth.style.background = '#48bb78';
-                        setTimeout(() => {
-                          btnMonth.textContent = '📋 Copiar Valores do Mês';
-                          btnMonth.style.background = '';
-                        }, 2000);
-                      }
-                    });
-                  }
+  <script>
+    (function(){
+      const btn = document.getElementById('copy-values');
+      const searchInput = document.getElementById('search-input');
+      const searchInfo = document.getElementById('search-info');
+      const table = document.getElementById('transactions-table');
+      const rows = table ? Array.from(table.querySelectorAll('tbody tr')) : [];
 
-                  // Filtro de mês
-                  if (monthFilter && rows.length > 0) {
-                    monthFilter.addEventListener('change', function() {
-                      const selectedMonth = this.value;
-                      let visibleCount = 0;
-                      rows.forEach(row => {
-                        if (!selectedMonth || row.getAttribute('data-month') === selectedMonth) {
-                          row.style.display = '';
-                          visibleCount++;
-                        } else {
-                          row.style.display = 'none';
-                        }
-                      });
-                      const searchInfo = document.getElementById('search-info');
-                      if (searchInfo) searchInfo.textContent = `${visibleCount} resultado(s)`;
-                    });
-                  }
-
-                  // Search functionality
-                  const searchInput = document.getElementById('search-input');
-                  const searchInfo = document.getElementById('search-info');
-                  if (searchInput && rows.length > 0) {
-                    searchInput.addEventListener('input', function() {
-                      const query = this.value.toLowerCase().trim();
-                      let visibleCount = 0;
-                      rows.forEach(row => {
-                        const text = row.textContent.toLowerCase();
-                        if (!query || text.includes(query)) {
-                          row.style.display = '';
-                          visibleCount++;
-                        } else {
-                          row.style.display = 'none';
-                        }
-                      });
-                      if (searchInfo) searchInfo.textContent = `${visibleCount} resultado(s)`;
-                    });
-                  }
-                })();
-              </script>
-            row.style.display = 'none';
-          }
-        });
-        const searchInfo = document.getElementById('search-info');
-        if (searchInfo) searchInfo.textContent = `${visibleCount} resultado(s)`;
-      }
-      if (monthFilter) {
-        monthFilter.addEventListener('change', function(){
-          filterByMonth(this.value);
-        });
-      }
-      // Copiar apenas os valores visíveis
+      // Copy values functionality
       if (btn) {
         btn.addEventListener('click', async () => {
-          const cells = Array.from(document.querySelectorAll('tbody tr'))
+          const visibleCells = rows
             .filter(tr => tr.style.display !== 'none')
             .map(tr => tr.querySelector('td.copy-col'));
-          const lines = cells.map(td => (td.textContent || '').trim()).filter(Boolean);
+          const lines = visibleCells.map(td => (td.textContent || '').trim()).filter(Boolean);
           const text = lines.join('\n');
+          
           try {
             await navigator.clipboard.writeText(text);
             btn.textContent = '✓ Copiado!';
@@ -498,7 +407,7 @@
               btn.style.background = '';
             }, 2000);
           } catch (err) {
-            // Fallback: cria um textarea temporário
+            // Fallback for older browsers
             const ta = document.createElement('textarea');
             ta.value = text;
             document.body.appendChild(ta);
@@ -514,12 +423,13 @@
           }
         });
       }
+
       // Search functionality
-      const searchInput = document.getElementById('search-input');
       if (searchInput && rows.length > 0) {
         searchInput.addEventListener('input', function() {
           const query = this.value.toLowerCase().trim();
           let visibleCount = 0;
+          
           rows.forEach(row => {
             const text = row.textContent.toLowerCase();
             if (!query || text.includes(query)) {
@@ -529,8 +439,10 @@
               row.style.display = 'none';
             }
           });
-          const searchInfo = document.getElementById('search-info');
-          if (searchInfo) searchInfo.textContent = `${visibleCount} resultado(s)`;
+          
+          if (searchInfo) {
+            searchInfo.textContent = `${visibleCount} resultado(s)`;
+          }
         });
       }
     })();
