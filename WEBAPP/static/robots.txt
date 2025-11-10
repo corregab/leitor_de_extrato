@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /uploads/
+Disallow: /exports/
+Disallow: /health
+
+Sitemap: https://leitor-extrato.onrender.com/sitemap.xml

@@ -5,7 +5,7 @@ import uuid
 from decimal import Decimal, ROUND_DOWN
 from typing import List, Dict, Any
 
-from flask import Flask, render_template, request, redirect, url_for, flash, abort
+from flask import Flask, render_template, request, redirect, url_for, flash, abort, send_from_directory
 
 import sys
 
@@ -112,6 +112,18 @@ def should_exclude_transaction(description: str, exclude_names: List[str]) -> bo
 @app.route('/', methods=['GET'])
 def index():
     return render_template('index.html')
+
+
+@app.route('/health', methods=['GET'])
+def health_check():
+    """Health check endpoint for monitoring"""
+    return {'status': 'healthy', 'service': 'leitor-extrato'}, 200
+
+
+@app.route('/robots.txt')
+def robots_txt():
+    """Serve robots.txt for SEO"""
+    return send_from_directory(app.static_folder, 'robots.txt')
 
 
 @app.route('/process', methods=['POST'])
