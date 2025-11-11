@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Apuracao de Extratos Bancarios</title>
+  <title>Apuração de Extratos Bancários</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -93,8 +93,8 @@
     <div class="card">
       <div class="header">
         <div class="icon-box">📊</div>
-        <h1>Apuracao de Extratos</h1>
-        <p class="subtitle">Extraia creditos dos seus extratos bancarios</p>
+  <h1>Apuração de Extratos</h1>
+  <p class="subtitle">Extraia créditos dos seus extratos bancários</p>
       </div>
 
       {% with messages = get_flashed_messages() %}
@@ -110,14 +110,14 @@
           <label for="bank">Selecione o Banco</label>
           <select id="bank" name="bank" required>
             <option value="" selected disabled>Escolha um banco...</option>
-            <option value="itau">Itau</option>
+            <option value="itau">Itaú</option>
             <option value="santander">Santander</option>
             <option value="nubank">Nubank</option>
             <option value="picpay">PicPay</option>
             <option value="mercadopago">Mercado Pago</option>
           </select>
           <div class="banks-grid">
-            <div class="bank-badge">Itau</div>
+            <div class="bank-badge">Itaú</div>
             <div class="bank-badge">Santander</div>
             <div class="bank-badge">Nubank</div>
             <div class="bank-badge">PicPay</div>
@@ -130,13 +130,13 @@
         </div>
         <div class="form-group">
           <label for="exclude_names">Nomes para Excluir (opcional)</label>
-          <input type="text" id="exclude_names" name="exclude_names" placeholder="Ex: Joao Silva, Maria Santos">
-          <small>Digite os nomes separados por virgula. Transacoes com esses nomes serao ignoradas.</small>
+          <input type="text" id="exclude_names" name="exclude_names" placeholder="Ex: João Silva, Maria Santos">
+          <small>Digite os nomes separados por vírgula. Transações com esses nomes serão ignoradas.</small>
         </div>
-        <button type="submit">Processar Extrato</button>
+  <button type="submit">Processar Extrato</button>
       </form>
     </div>
-    <div class="footer">Suporte: Itau - Santander - Nubank - PicPay - Mercado Pago</div>
+  <div class="footer">Suporte: Itaú • Santander • Nubank • PicPay • Mercado Pago</div>
   </div>
 </body>
 </html>
