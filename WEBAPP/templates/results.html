@@ -1,350 +1,674 @@
-<!doctype html>
-<html lang="pt-br">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Resultados - Apuração</title>
-  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #0000FF 0%, #0033cc 100%);
-      min-height: 100vh;
-      padding: 40px 20px;
-    }
-    
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    
-    .header {
-      background: white;
-      padding: 32px;
-      border-radius: 20px 20px 0 0;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-      animation: slideDown 0.5s ease-out;
-    }
-    
-    @keyframes slideDown {
-      from { opacity: 0; transform: translateY(-30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .header-content {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 16px;
-    }
-    
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-    
-    .icon {
-      width: 56px;
-      height: 56px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 28px;
-    }
-    
-    h1 {
-      font-size: 28px;
-      font-weight: 700;
-      color: #1a202c;
-    }
-    
-    .subtitle {
-      color: #718096;
-      font-size: 14px;
-      margin-top: 4px;
-    }
-    
-    .actions {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-    
-    .btn {
-      padding: 12px 24px;
-      border: none;
-      border-radius: 10px;
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 14px;
-      transition: all 0.2s;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-    
-    .btn-primary {
-      background: #FF0000;
-      color: white;
-      box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4);
-    }
-    
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(255, 0, 0, 0.5);
-      background: #cc0000;
-    }
-    
-    .btn-secondary {
-      background: #edf2f7;
-      color: #2d3748;
-    }
-    
-    .btn-secondary:hover {
-      background: #e2e8f0;
-      transform: translateY(-2px);
-    }
-    
-    .table-container {
-      background: white;
-      padding: 32px;
-      border-radius: 0 0 20px 20px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-      animation: slideUp 0.6s ease-out;
-      overflow-x: auto;
-    }
-    
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    table {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 0;
-      min-width: 700px;
-    }
-    
-    thead {
-      background: #f7fafc;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-    
-    th {
-      padding: 16px 12px;
-      text-align: left;
-      font-size: 12px;
-      font-weight: 700;
-      color: #4a5568;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      border-bottom: 2px solid #e2e8f0;
-    }
-    
-    td {
-      padding: 16px 12px;
-      border-bottom: 1px solid #f0f0f0;
-      color: #2d3748;
-      font-size: 14px;
-    }
-    
-    tbody tr {
-      transition: all 0.2s;
-    }
-    
-    tbody tr:hover {
-      background: #f7fafc;
-      transform: scale(1.01);
-    }
-    
-    .amount {
-      font-weight: 600;
-      color: #2f855a;
-      white-space: nowrap;
-      text-align: right;
-    }
-    
-    .copy-col {
-      font-family: 'Courier New', monospace;
-      color: #718096;
-      font-size: 13px;
-      text-align: right;
-    }
-    
-    .total-section {
-      background: white;
-      margin-top: 24px;
-      padding: 24px 32px;
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      animation: slideUp 0.7s ease-out;
-    }
-    
-    .total-label {
-      font-size: 16px;
-      color: #4a5568;
-      font-weight: 600;
-    }
-    .total-value {
-      font-size: 32px;
-      font-weight: 700;
-      color: #FF0000;
-    } background-clip: text;
-    }
-    
-    .empty-state {
-      text-align: center;
-      padding: 60px 20px;
-      color: #718096;
-    }
-    
-    .empty-icon {
-      font-size: 64px;
-      margin-bottom: 16px;
-      opacity: 0.3;
-    }
-    
-    @media (max-width: 768px) {
+<!doctype html><!doctype html>
+
+<html lang="pt-br"><html lang="pt-br">
+
+<head><head>
+
+  <meta charset="utf-8">  <meta charset="utf-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Resultados - Apuracao</title>  <title>Resultados - Apuração</title>
+
+  <style>  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }  <style>
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {    
+
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;    body {
+
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+      min-height: 100vh;      background: linear-gradient(135deg, #0000FF 0%, #0033cc 100%);
+
+      padding: 40px 20px;      min-height: 100vh;
+
+    }      padding: 40px 20px;
+
+        }
+
+    .container { max-width: 1200px; margin: 0 auto; }    
+
+        .container {
+
+    .header {      max-width: 1200px;
+
+      background: white;      margin: 0 auto;
+
+      padding: 32px;    }
+
+      border-radius: 20px 20px 0 0;    
+
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);    .header {
+
+    }      background: white;
+
+          padding: 32px;
+
+    .header-content {      border-radius: 20px 20px 0 0;
+
+      display: flex;      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+
+      justify-content: space-between;      animation: slideDown 0.5s ease-out;
+
+      align-items: center;    }
+
+      flex-wrap: wrap;    
+
+      gap: 16px;    @keyframes slideDown {
+
+    }      from { opacity: 0; transform: translateY(-30px); }
+
+          to { opacity: 1; transform: translateY(0); }
+
+    .header-left {    }
+
+      display: flex;    
+
+      align-items: center;    .header-content {
+
+      gap: 16px;      display: flex;
+
+    }      justify-content: space-between;
+
+          align-items: center;
+
+    .icon {      flex-wrap: wrap;
+
+      width: 56px;      gap: 16px;
+
+      height: 56px;    }
+
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);    
+
+      border-radius: 14px;    .header-left {
+
+      display: flex;      display: flex;
+
+      align-items: center;      align-items: center;
+
+      justify-content: center;      gap: 16px;
+
+      font-size: 28px;    }
+
+    }    
+
+        .icon {
+
+    h1 { font-size: 28px; font-weight: 700; color: #1a202c; }      width: 56px;
+
+    .subtitle { color: #718096; font-size: 14px; margin-top: 4px; }      height: 56px;
+
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+    .actions { display: flex; gap: 12px; flex-wrap: wrap; }      border-radius: 14px;
+
+          display: flex;
+
+    .btn {      align-items: center;
+
+      padding: 12px 24px;      justify-content: center;
+
+      border: none;      font-size: 28px;
+
+      border-radius: 10px;    }
+
+      font-weight: 600;    
+
+      cursor: pointer;    h1 {
+
+      font-size: 14px;      font-size: 28px;
+
+      transition: all 0.2s;      font-weight: 700;
+
+      text-decoration: none;      color: #1a202c;
+
+      display: inline-flex;    }
+
+      align-items: center;    
+
+      gap: 8px;    .subtitle {
+
+    }      color: #718096;
+
+          font-size: 14px;
+
+    .btn-primary {      margin-top: 4px;
+
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);    }
+
+      color: white;    
+
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);    .actions {
+
+    }      display: flex;
+
+          gap: 12px;
+
+    .btn-primary:hover {      flex-wrap: wrap;
+
+      transform: translateY(-2px);    }
+
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);    
+
+    }    .btn {
+
+          padding: 12px 24px;
+
+    .btn-secondary { background: #edf2f7; color: #2d3748; }      border: none;
+
+    .btn-secondary:hover { background: #e2e8f0; transform: translateY(-2px); }      border-radius: 10px;
+
+          font-weight: 600;
+
+    .table-container {      cursor: pointer;
+
+      background: white;      font-size: 14px;
+
+      padding: 32px;      transition: all 0.2s;
+
+      border-radius: 0 0 20px 20px;      text-decoration: none;
+
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);      display: inline-flex;
+
+      overflow-x: auto;      align-items: center;
+
+    }      gap: 8px;
+
+        }
+
+    .search-box {    
+
+      margin-bottom: 24px;    .btn-primary {
+
+      display: flex;      background: #FF0000;
+
+      align-items: center;      color: white;
+
+      gap: 12px;      box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4);
+
+    }    }
+
+        
+
+    .search-box input {    .btn-primary:hover {
+
+      flex: 1;      transform: translateY(-2px);
+
+      padding: 12px 16px;      box-shadow: 0 6px 20px rgba(255, 0, 0, 0.5);
+
+      border: 2px solid #e2e8f0;      background: #cc0000;
+
+      border-radius: 10px;    }
+
+      font-size: 15px;    
+
+      transition: all 0.2s;    .btn-secondary {
+
+    }      background: #edf2f7;
+
+          color: #2d3748;
+
+    .search-box input:focus {    }
+
+      outline: none;    
+
+      border-color: #667eea;    .btn-secondary:hover {
+
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);      background: #e2e8f0;
+
+    }      transform: translateY(-2px);
+
+        }
+
+    .search-info {    
+
+      color: #718096;    .table-container {
+
+      font-size: 14px;      background: white;
+
+      font-weight: 500;      padding: 32px;
+
+      white-space: nowrap;      border-radius: 0 0 20px 20px;
+
+    }      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+
+          animation: slideUp 0.6s ease-out;
+
+    table {      overflow-x: auto;
+
+      width: 100%;    }
+
+      border-collapse: separate;    
+
+      border-spacing: 0;    @keyframes slideUp {
+
+      min-width: 700px;      from { opacity: 0; transform: translateY(30px); }
+
+    }      to { opacity: 1; transform: translateY(0); }
+
+        }
+
+    thead { background: #f7fafc; }    
+
+        table {
+
+    th {      width: 100%;
+
+      padding: 16px 12px;      border-collapse: separate;
+
+      text-align: left;      border-spacing: 0;
+
+      font-size: 12px;      min-width: 700px;
+
+      font-weight: 700;    }
+
+      color: #4a5568;    
+
+      text-transform: uppercase;    thead {
+
+      letter-spacing: 0.5px;      background: #f7fafc;
+
+      border-bottom: 2px solid #e2e8f0;      position: sticky;
+
+    }      top: 0;
+
+          z-index: 10;
+
+    td {    }
+
+      padding: 16px 12px;    
+
+      border-bottom: 1px solid #f0f0f0;    th {
+
+      color: #2d3748;      padding: 16px 12px;
+
+      font-size: 14px;      text-align: left;
+
+    }      font-size: 12px;
+
+          font-weight: 700;
+
+    tbody tr { transition: all 0.2s; }      color: #4a5568;
+
+    tbody tr:hover { background: #f7fafc; }      text-transform: uppercase;
+
+          letter-spacing: 0.5px;
+
+    .amount {      border-bottom: 2px solid #e2e8f0;
+
+      font-weight: 600;    }
+
+      color: #2f855a;    
+
+      white-space: nowrap;    td {
+
+      text-align: right;      padding: 16px 12px;
+
+    }      border-bottom: 1px solid #f0f0f0;
+
+          color: #2d3748;
+
+    .copy-col {      font-size: 14px;
+
+      font-family: 'Courier New', monospace;    }
+
+      color: #718096;    
+
+      font-size: 13px;    tbody tr {
+
+      text-align: right;      transition: all 0.2s;
+
+    }    }
+
+        
+
+    .total-section {    tbody tr:hover {
+
+      background: white;      background: #f7fafc;
+
+      margin-top: 24px;      transform: scale(1.01);
+
+      padding: 24px 32px;    }
+
+      border-radius: 20px;    
+
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);    .amount {
+
+      display: flex;      font-weight: 600;
+
+      justify-content: space-between;      color: #2f855a;
+
+      align-items: center;      white-space: nowrap;
+
+    }      text-align: right;
+
+        }
+
+    .total-label { font-size: 16px; color: #4a5568; font-weight: 600; }    
+
+    .total-value { font-size: 32px; font-weight: 700; color: #667eea; }    .copy-col {
+
+          font-family: 'Courier New', monospace;
+
+    .empty-state { text-align: center; padding: 60px 20px; color: #718096; }      color: #718096;
+
+    .empty-icon { font-size: 64px; margin-bottom: 16px; opacity: 0.3; }      font-size: 13px;
+
+          text-align: right;
+
+    .flash {    }
+
+      background: #bee3f8;    
+
+      border-left: 4px solid #3182ce;    .total-section {
+
+      color: #2c5282;      background: white;
+
+      padding: 12px 16px;      margin-top: 24px;
+
+      border-radius: 8px;      padding: 24px 32px;
+
+      margin-bottom: 20px;      border-radius: 20px;
+
+      font-size: 14px;      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+
+    }      display: flex;
+
+          justify-content: space-between;
+
+    @media (max-width: 768px) {      align-items: center;
+
+      .header { padding: 24px 20px; }      animation: slideUp 0.7s ease-out;
+
+      .header-content { flex-direction: column; align-items: stretch; }    }
+
+      .header-left { flex-direction: column; align-items: center; text-align: center; }    
+
+      .actions { justify-content: center; }    .total-label {
+
+      .table-container { padding: 20px; }      font-size: 16px;
+
+      .total-section { flex-direction: column; gap: 12px; text-align: center; }      color: #4a5568;
+
+      .total-value { font-size: 28px; }      font-weight: 600;
+
+      h1 { font-size: 24px; }    }
+
+    }    .total-value {
+
+  </style>      font-size: 32px;
+
+</head>      font-weight: 700;
+
+<body>      color: #FF0000;
+
+  <div class="container">    } background-clip: text;
+
+    <div class="header">    }
+
+      <div class="header-content">    
+
+        <div class="header-left">    .empty-state {
+
+          <div class="icon">✅</div>      text-align: center;
+
+          <div>      padding: 60px 20px;
+
+            <h1>Resultados - {{ bank_label }}</h1>      color: #718096;
+
+            <p class="subtitle">{{ rows|length }} creditos encontrados</p>    }
+
+          </div>    
+
+        </div>    .empty-icon {
+
+        <div class="actions">      font-size: 64px;
+
+          <button id="copy-values" class="btn btn-primary">Copiar Valores</button>      margin-bottom: 16px;
+
+          <a href="{{ url_for('index') }}" class="btn btn-secondary">Voltar</a>      opacity: 0.3;
+
+        </div>    }
+
+      </div>    
+
+    </div>    @media (max-width: 768px) {
+
       .header { padding: 24px 20px; }
-      .header-content { flex-direction: column; align-items: stretch; }
-      .header-left { flex-direction: column; align-items: center; text-align: center; }
-      .actions { justify-content: center; }
-      .table-container { padding: 20px; }
-      .total-section { flex-direction: column; gap: 12px; text-align: center; }
-      .total-value { font-size: 28px; }
-      h1 { font-size: 24px; }
-    }
 
-    /* Flexcredit brand badge */
-    .flex-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: #edf2f7;
-      color: #2d3748;
-      padding: 6px 10px;
-      border-radius: 8px;
-      font-size: 12px;
-      margin-top: 6px;
-      width: fit-content;
-    }
-    .flexcredit-logo { height: 18px; width: auto; display: block; }
-    .label-with-brand { display: flex; flex-direction: column; gap: 6px; }
-    
-    /* Search box */
-    .search-box {
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .search-box input {
-      flex: 1;
-      padding: 12px 16px;
-      border: 2px solid #e2e8f0;
-      border-radius: 10px;
-      font-size: 15px;
-      transition: all 0.2s;
-    }
-    .search-box input:focus {
-      outline: none;
-      border-color: #0000FF;
-      box-shadow: 0 0 0 3px rgba(0, 0, 255, 0.1);
-    }
+    <div class="table-container">      .header-content { flex-direction: column; align-items: stretch; }
+
+      {% with messages = get_flashed_messages(with_categories=true) %}      .header-left { flex-direction: column; align-items: center; text-align: center; }
+
+        {% if messages %}      .actions { justify-content: center; }
+
+          {% for category, msg in messages %}      .table-container { padding: 20px; }
+
+            <div class="flash">{{ msg }}</div>      .total-section { flex-direction: column; gap: 12px; text-align: center; }
+
+          {% endfor %}      .total-value { font-size: 28px; }
+
+        {% endif %}      h1 { font-size: 24px; }
+
+      {% endwith %}    }
+
+
+
+      {% if rows %}    /* Flexcredit brand badge */
+
+        <div class="search-box">    .flex-badge {
+
+          <input type="text" id="search-input" placeholder="Buscar transacao (nome, valor, data, tipo...)">      display: inline-flex;
+
+          <span class="search-info" id="search-info">{{ rows|length }} resultado(s)</span>      align-items: center;
+
+        </div>      gap: 8px;
+
+              background: #edf2f7;
+
+        <table id="transactions-table">      color: #2d3748;
+
+          <thead>      padding: 6px 10px;
+
+            <tr>      border-radius: 8px;
+
+              <th>Data</th>      font-size: 12px;
+
+              <th>Tipo</th>      margin-top: 6px;
+
+              <th>Descricao</th>      width: fit-content;
+
+              <th class="amount">Valor</th>    }
+
+              <th class="copy-col">Valor (copiar)</th>    .flexcredit-logo { height: 18px; width: auto; display: block; }
+
+            </tr>    .label-with-brand { display: flex; flex-direction: column; gap: 6px; }
+
+          </thead>    
+
+          <tbody>    /* Search box */
+
+            {% for r in rows %}    .search-box {
+
+            <tr>      margin-bottom: 20px;
+
+              <td>{{ r.date }}</td>      display: flex;
+
+              <td>{{ r.type }}</td>      align-items: center;
+
+              <td>{{ r.description }}</td>      gap: 12px;
+
+              <td class="amount">{{ r.amount }}</td>    }
+
+              <td class="copy-col">{{ r.amount_plain }}</td>    .search-box input {
+
+            </tr>      flex: 1;
+
+            {% endfor %}      padding: 12px 16px;
+
+          </tbody>      border: 2px solid #e2e8f0;
+
+        </table>      border-radius: 10px;
+
+      {% else %}      font-size: 15px;
+
+        <div class="empty-state">      transition: all 0.2s;
+
+          <div class="empty-icon">📭</div>    }
+
+          <h3>Nenhum credito encontrado</h3>    .search-box input:focus {
+
+          <p>Tente processar outro extrato</p>      outline: none;
+
+        </div>      border-color: #0000FF;
+
+      {% endif %}      box-shadow: 0 0 0 3px rgba(0, 0, 255, 0.1);
+
+    </div>    }
+
     .search-info {
-      color: #718096;
-      font-size: 14px;
-      font-weight: 500;
-    }
-    .highlight {
-      background: #fef08a;
-      font-weight: 600;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="header">
-      <div class="header-content">
-        <div class="header-left">
-          <div class="icon">✅</div>
-          <div>
-            <h1>Resultados</h1>
-            <p class="subtitle">{{ rows|length }} créditos encontrados</p>
-            <div class="flex-badge" aria-label="by Flexcredit">
-              <span>by</span>
-              <svg class="flexcredit-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 24" role="img" aria-label="Flexcredit">
-                <title>Flexcredit</title>
-                <text x="0" y="17" font-family="Arial Black, sans-serif" font-size="17" fill="#0000FF">FLE</text>
-                <text x="38" y="17" font-family="Arial Black, sans-serif" font-size="17" fill="#FF0000">X</text>
-                <rect x="0" y="19" width="58" height="2.5" fill="#FF0000"/>
-                <text x="50" y="17" font-family="Arial Black, sans-serif" font-size="17" fill="#0000FF">CREDIT</text>
-              </svg>
-            </div>
-          </div>
-        </div>
-        <div class="actions">
-          <button id="copy-values" class="btn btn-primary">📋 Copiar Valores</button>
-          <a href="{{ url_for('index') }}" class="btn btn-secondary">← Voltar</a>
-        </div>
-      </div>
-    </div>
 
-    <div class="table-container">
-      {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-          {% for category, msg in messages %}
-            <div style="background: #bee3f8; border-left: 4px solid #3182ce; color: #2c5282; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 14px;">
-              {% if rows %}
-                <div class="search-box">
-                  <input type="text" id="search-input" placeholder="🔍 Buscar transação (nome, valor, data, tipo...)">
-                  <span class="search-info" id="search-info">{{ rows|length }} resultado(s)</span>
-                </div>
-                <div style="margin-bottom: 18px; display: flex; gap: 12px; align-items: center;">
-                  <label for="month-filter" style="font-weight:600;">Filtrar por mês:</label>
-                  <select id="month-filter" style="padding:8px 16px; border-radius:8px; font-size:15px;">
-                    <option value="">Todos</option>
-                    {% for mes in meses %}
-                      <option value="{{ mes }}">{{ mes }}</option>
-                    {% endfor %}
-                  </select>
-                  <button id="copy-month-values" class="btn btn-secondary" style="padding:8px 16px;">📋 Copiar Valores do Mês</button>
-                </div>
-                <table id="transactions-table">
-                  <thead>
-                    <tr>
-                      <th>Data</th>
-                      <th>Tipo</th>
-                      <th>Descrição</th>
-                      <th class="amount">Valor</th>
-                      <th class="copy-col">Valor (copiar)</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {% for r in rows %}
-                    <tr data-month="{{ r.month }}">
-                      <td>{{ r.date }}</td>
-                      <td>{{ r.type }}</td>
-                      <td>{{ r.description }}</td>
-                      <td class="amount">{{ r.amount }}</td>
-                      <td class="copy-col">{{ r.amount_plain }}</td>
-                    </tr>
-                    {% endfor %}
-                  </tbody>
-                </table>
+    <div class="total-section">      color: #718096;
+
+      <div class="total-label">Total de Creditos</div>      font-size: 14px;
+
+      <div class="total-value">{{ total }}</div>      font-weight: 500;
+
+    </div>    }
+
+  </div>    .highlight {
+
+      background: #fef08a;
+
+  <script>      font-weight: 600;
+
+    (function(){    }
+
+      const btn = document.getElementById('copy-values');  </style>
+
+      const searchInput = document.getElementById('search-input');</head>
+
+      const table = document.getElementById('transactions-table');<body>
+
+      const rows = table ? Array.from(table.querySelectorAll('tbody tr')) : [];  <div class="container">
+
+          <div class="header">
+
+      if (searchInput && rows.length > 0) {      <div class="header-content">
+
+        searchInput.addEventListener('input', function() {        <div class="header-left">
+
+          const query = this.value.toLowerCase().trim();          <div class="icon">✅</div>
+
+          let visibleCount = 0;          <div>
+
+          rows.forEach(row => {            <h1>Resultados</h1>
+
+            const text = row.textContent.toLowerCase();            <p class="subtitle">{{ rows|length }} créditos encontrados</p>
+
+            if (!query || text.includes(query)) {            <div class="flex-badge" aria-label="by Flexcredit">
+
+              row.style.display = '';              <span>by</span>
+
+              visibleCount++;              <svg class="flexcredit-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 24" role="img" aria-label="Flexcredit">
+
+            } else {                <title>Flexcredit</title>
+
+              row.style.display = 'none';                <text x="0" y="17" font-family="Arial Black, sans-serif" font-size="17" fill="#0000FF">FLE</text>
+
+            }                <text x="38" y="17" font-family="Arial Black, sans-serif" font-size="17" fill="#FF0000">X</text>
+
+          });                <rect x="0" y="19" width="58" height="2.5" fill="#FF0000"/>
+
+          const searchInfo = document.getElementById('search-info');                <text x="50" y="17" font-family="Arial Black, sans-serif" font-size="17" fill="#0000FF">CREDIT</text>
+
+          if (searchInfo) searchInfo.textContent = visibleCount + ' resultado(s)';              </svg>
+
+        });            </div>
+
+      }          </div>
+
+              </div>
+
+      if (btn) {        <div class="actions">
+
+        btn.addEventListener('click', async () => {          <button id="copy-values" class="btn btn-primary">📋 Copiar Valores</button>
+
+          const cells = Array.from(document.querySelectorAll('tbody tr'))          <a href="{{ url_for('index') }}" class="btn btn-secondary">← Voltar</a>
+
+            .filter(tr => tr.style.display !== 'none')        </div>
+
+            .map(tr => tr.querySelector('td.copy-col'));      </div>
+
+          const lines = cells.map(td => (td.textContent || '').trim()).filter(Boolean);    </div>
+
+          const text = lines.join('\\n');
+
+          try {    <div class="table-container">
+
+            await navigator.clipboard.writeText(text);      {% with messages = get_flashed_messages(with_categories=true) %}
+
+            btn.textContent = 'Copiado!';        {% if messages %}
+
+            btn.style.background = '#48bb78';          {% for category, msg in messages %}
+
+            setTimeout(() => {            <div style="background: #bee3f8; border-left: 4px solid #3182ce; color: #2c5282; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 14px;">
+
+              btn.textContent = 'Copiar Valores';              ℹ️ {{ msg }}
+
+              btn.style.background = '';            </div>
+
+            }, 2000);          {% endfor %}
+
+          } catch (err) {        {% endif %}
+
+            const ta = document.createElement('textarea');      {% endwith %}
+
+            ta.value = text;
+
+            document.body.appendChild(ta);      {% if rows %}
+
+            ta.select();        <div class="search-box">
+
+            try { document.execCommand('copy'); } catch(e){}          <input type="text" id="search-input" placeholder="🔍 Buscar transação (nome, valor, data, tipo...)">
+
+            document.body.removeChild(ta);          <span class="search-info" id="search-info">{{ rows|length }} resultado(s)</span>
+
+            btn.textContent = 'Copiado!';        </div>
+
+            btn.style.background = '#48bb78';        <div class="search-box" style="margin-bottom: 10px;"></div>
+
+            setTimeout(() => {          <label for="month-filter" style="font-weight:600; color:#2d3748;">Filtrar por mês:</label>
+
+              btn.textContent = 'Copiar Valores';          <select id="month-filter" style="padding:8px 12px; border-radius:8px; border:1.5px solid #e2e8f0;">
+
+              btn.style.background = '';            <option value="">Todos</option>
+
+            }, 2000);            {% set meses = rows | map(attribute='date') | map('string') | map('slice', 3, 7) | list %}
+
+          }            {% for m in meses|unique %}
+
+        });              <option value="{{ m }}">{{ m }}</option>
+
+      }            {% endfor %}
+
+    })();          </select>
+
+  </script>        </div>
+
+</body>        
+
+</html>        <table id="transactions-table">
+
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Tipo</th>
+              <th>Descrição</th>
               <th class="amount">Valor</th>
               <th class="copy-col">Valor (copiar)</th>
             </tr>
@@ -354,122 +678,65 @@
             <tr>
               <td>{{ r.date }}</td>
               <td>{{ r.type }}</td>
-              <script>
-                (function(){
-                  const btn = document.getElementById('copy-values');
-                  const btnMonth = document.getElementById('copy-month-values');
-                  const monthFilter = document.getElementById('month-filter');
-                  const table = document.getElementById('transactions-table');
-                  const rows = table ? Array.from(table.querySelectorAll('tbody tr')) : [];
+              <td>{{ r.description }}</td>
+              <td class="amount">{{ r.amount }}</td>
+              <td class="copy-col">{{ r.amount_plain }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <div class="empty-state">
+          <div class="empty-icon">📭</div>
+          <h3>Nenhum crédito encontrado</h3>
+          <p>Tente processar outro extrato</p>
+          <div class="flex-badge" style="margin-top:12px" aria-label="by Flexcredit">
+            <span>by</span>
+            <svg class="flexcredit-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 20" role="img" aria-label="Flexcredit">
+              <title>Flexcredit</title>
+              <text x="0" y="15" font-family="Arial Black, sans-serif" font-size="15" fill="#0000FF">FLE</text>
+              <text x="33" y="15" font-family="Arial Black, sans-serif" font-size="15" fill="#FF0000">X</text>
+              <rect x="0" y="16" width="50" height="2" fill="#FF0000"/>
+              <text x="45" y="15" font-family="Arial Black, sans-serif" font-size="15" fill="#0000FF">CREDIT</text>
+            </svg>
+          </div>
+        </div>
+      {% endif %}
+    </div>
 
-                  // Copiar todos os valores
-                  if (btn) {
-                    btn.addEventListener('click', async () => {
-                      const cells = Array.from(document.querySelectorAll('td.copy-col'));
-                      const lines = cells.map(td => (td.textContent || '').trim()).filter(Boolean);
-                      const text = lines.join('\n');
-                      try {
-                        await navigator.clipboard.writeText(text);
-                        btn.textContent = '✓ Copiado!';
-                        btn.style.background = '#48bb78';
-                        setTimeout(() => {
-                          btn.textContent = '📋 Copiar Valores';
-                          btn.style.background = '';
-                        }, 2000);
-                      } catch (err) {
-                        const ta = document.createElement('textarea');
-                        ta.value = text;
-                        document.body.appendChild(ta);
-                        ta.select();
-                        try { document.execCommand('copy'); } catch(e){}
-                        document.body.removeChild(ta);
-                        btn.textContent = '✓ Copiado!';
-                        btn.style.background = '#48bb78';
-                        setTimeout(() => {
-                          btn.textContent = '📋 Copiar Valores';
-                          btn.style.background = '';
-                        }, 2000);
-                      }
-                    });
-                  }
+    <div class="total-section">
+      <div class="label-with-brand">
+        <div class="total-label">💰 Total de Créditos</div>
+        <div class="flex-badge" aria-label="by Flexcredit">
+          <span>by</span>
+          <svg class="flexcredit-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 24" role="img" aria-label="Flexcredit">
+            <title>Flexcredit</title>
+            <text x="0" y="17" font-family="Arial Black, sans-serif" font-size="17" fill="#0000FF">FLE</text>
+            <text x="38" y="17" font-family="Arial Black, sans-serif" font-size="17" fill="#FF0000">X</text>
+            <rect x="0" y="19" width="58" height="2.5" fill="#FF0000"/>
+            <text x="50" y="17" font-family="Arial Black, sans-serif" font-size="17" fill="#0000FF">CREDIT</text>
+          </svg>
+        </div>
+      </div>
+      <div class="total-value">{{ total }}</div>
+    </div>
+  </div>
 
-                  // Copiar valores do mês filtrado
-                  if (btnMonth && monthFilter) {
-                    btnMonth.addEventListener('click', async () => {
-                      const selectedMonth = monthFilter.value;
-                      let filteredCells;
-                      if (!selectedMonth) {
-                        filteredCells = Array.from(document.querySelectorAll('td.copy-col'));
-                      } else {
-                        filteredCells = rows.filter(row => row.getAttribute('data-month') === selectedMonth)
-                          .map(row => row.querySelector('td.copy-col'));
-                      }
-                      const lines = filteredCells.map(td => (td.textContent || '').trim()).filter(Boolean);
-                      const text = lines.join('\n');
-                      try {
-                        await navigator.clipboard.writeText(text);
-                        btnMonth.textContent = '✓ Copiado!';
-                        btnMonth.style.background = '#48bb78';
-                        setTimeout(() => {
-                          btnMonth.textContent = '📋 Copiar Valores do Mês';
-                          btnMonth.style.background = '';
-                        }, 2000);
-                      } catch (err) {
-                        const ta = document.createElement('textarea');
-                        ta.value = text;
-                        document.body.appendChild(ta);
-                        ta.select();
-                        try { document.execCommand('copy'); } catch(e){}
-                        document.body.removeChild(ta);
-                        btnMonth.textContent = '✓ Copiado!';
-                        btnMonth.style.background = '#48bb78';
-                        setTimeout(() => {
-                          btnMonth.textContent = '📋 Copiar Valores do Mês';
-                          btnMonth.style.background = '';
-                        }, 2000);
-                      }
-                    });
-                  }
-
-                  // Filtro de mês
-                  if (monthFilter && rows.length > 0) {
-                    monthFilter.addEventListener('change', function() {
-                      const selectedMonth = this.value;
-                      let visibleCount = 0;
-                      rows.forEach(row => {
-                        if (!selectedMonth || row.getAttribute('data-month') === selectedMonth) {
-                          row.style.display = '';
-                          visibleCount++;
-                        } else {
-                          row.style.display = 'none';
-                        }
-                      });
-                      const searchInfo = document.getElementById('search-info');
-                      if (searchInfo) searchInfo.textContent = `${visibleCount} resultado(s)`;
-                    });
-                  }
-
-                  // Search functionality
-                  const searchInput = document.getElementById('search-input');
-                  const searchInfo = document.getElementById('search-info');
-                  if (searchInput && rows.length > 0) {
-                    searchInput.addEventListener('input', function() {
-                      const query = this.value.toLowerCase().trim();
-                      let visibleCount = 0;
-                      rows.forEach(row => {
-                        const text = row.textContent.toLowerCase();
-                        if (!query || text.includes(query)) {
-                          row.style.display = '';
-                          visibleCount++;
-                        } else {
-                          row.style.display = 'none';
-                        }
-                      });
-                      if (searchInfo) searchInfo.textContent = `${visibleCount} resultado(s)`;
-                    });
-                  }
-                })();
-              </script>
+  <script>
+    (function(){
+      const btn = document.getElementById('copy-values');
+      const monthFilter = document.getElementById('month-filter');
+      const table = document.getElementById('transactions-table');
+      const rows = table ? Array.from(table.querySelectorAll('tbody tr')) : [];
+      // Função para filtrar por mês
+      function filterByMonth(month) {
+        let visibleCount = 0;
+        rows.forEach(row => {
+          const date = row.children[0].textContent;
+          if (!month || (date && date.slice(3,7) === month)) {
+            row.style.display = '';
+            visibleCount++;
+          } else {
             row.style.display = 'none';
           }
         });

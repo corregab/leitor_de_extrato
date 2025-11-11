@@ -1,450 +1,100 @@
-<!doctype html><!doctype html>
-
-<html lang="pt-br"><html lang="pt-br">
-
-<head><head>
-
-  <meta charset="utf-8">  <meta charset="utf-8">
-
-  <meta name="viewport" content="width=device-width, initial-scale=1">  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <title>Apuração de Extratos Bancários</title>  <title>Apuração de Extratos Bancários</title>
-
-  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
-
-  <style>  <style>
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {    
-
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;    body {
-
-      background: linear-gradient(135deg, #0000FF 0%, #0033cc 100%);      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-
-      min-height: 100vh;      background: linear-gradient(135deg, #0000FF 0%, #0033cc 100%);
-
-      display: flex;      min-height: 100vh;
-
-      align-items: center;      display: flex;
-
-      justify-content: center;      align-items: center;
-
-      padding: 20px;      justify-content: center;
-
-    }      padding: 20px;
-
-    .container { width: 100%; max-width: 480px; }    }
-
-    .card {    
-
-      background: white;    .container {
-
-      border-radius: 20px;      width: 100%;
-
-      padding: 40px;      max-width: 480px;
-
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);    }
-
-      animation: slideUp 0.5s ease-out;    
-
-    }    .card {
-
-    @keyframes slideUp {      background: white;
-
-      from { opacity: 0; transform: translateY(30px); }      border-radius: 20px;
-
-      to { opacity: 1; transform: translateY(0); }      padding: 40px;
-
-    }      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-
-    .header { text-align: center; margin-bottom: 32px; }      animation: slideUp 0.5s ease-out;
-
-    .logo-apure { max-width: 300px; height: auto; margin: 0 auto 16px; display: block; }    }
-
-    h1 { font-size: 28px; font-weight: 700; color: #1a202c; margin-bottom: 8px; display: none; }    
-
-    .subtitle { color: #718096; font-size: 14px; }    @keyframes slideUp {
-
-    .flash {      from { opacity: 0; transform: translateY(30px); }
-
-      background: #fed7d7;      to { opacity: 1; transform: translateY(0); }
-
-      border-left: 4px solid #f56565;    }
-
-      color: #742a2a;    
-
-      padding: 14px 16px;    .header {
-
-      border-radius: 8px;      text-align: center;
-
-      margin-bottom: 24px;      margin-bottom: 32px;
-
-      font-size: 14px;    }
-
-    }    
-
-    .form-group { margin-bottom: 24px; }    .logo-apure {
-
-    label { display: block; font-weight: 600; color: #2d3748; margin-bottom: 8px; font-size: 14px; }      max-width: 300px;
-
-    select, input[type=file], input[type=text] {      height: auto;
-
-      width: 100%;      margin: 0 auto 16px;
-
-      padding: 12px 16px;      display: block;
-
-      border: 2px solid #e2e8f0;    }
-
-      border-radius: 10px;    
-
-      font-size: 15px;    h1 {
-
-      transition: all 0.2s;      font-size: 28px;
-
-      background: white;      font-weight: 700;
-
-      color: #2d3748;      color: #1a202c;
-
-    }      margin-bottom: 8px;
-
-    select:focus, input[type=file]:focus, input[type=text]:focus {      display: none;
-
-      outline: none;    }
-
-      border-color: #FF0000;    
-
-      box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.1);    .subtitle {
-
-    }      color: #718096;
-
-    select {      font-size: 14px;
-
-      cursor: pointer;    }
-
-      appearance: none;    
-
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23FF0000' d='M6 9L1 4h10z'/%3E%3C/svg%3E");    .flash {
-
-      background-repeat: no-repeat;      background: #fed7d7;
-
-      background-position: right 16px center;      border-left: 4px solid #f56565;
-
-      padding-right: 40px;      color: #742a2a;
-
-    }      padding: 14px 16px;
-
-    input[type=file] { cursor: pointer; }      border-radius: 8px;
-
-    input[type=file]::file-selector-button {      margin-bottom: 24px;
-
-      background: #FF0000;      font-size: 14px;
-
-      color: white;      animation: shake 0.3s;
-
-      border: none;    }
-
-      padding: 8px 16px;    
-
-      border-radius: 6px;    @keyframes shake {
-
-      cursor: pointer;      0%, 100% { transform: translateX(0); }
-
-      font-weight: 600;      25% { transform: translateX(-5px); }
-
-      margin-right: 12px;      75% { transform: translateX(5px); }
-
-      transition: transform 0.2s;    }
-
-    }    
-
-    input[type=file]::file-selector-button:hover {    .form-group {
-
-      transform: scale(1.05);      margin-bottom: 24px;
-
-      background: #cc0000;    }
-
-    }    
-
-    button {    label {
-
-      width: 100%;      display: block;
-
-      padding: 14px;      font-weight: 600;
-
-      background: #FF0000;      color: #2d3748;
-
-      color: white;      margin-bottom: 8px;
-
-      border: none;      font-size: 14px;
-
-      border-radius: 10px;      letter-spacing: 0.3px;
-
-      font-size: 16px;    }
-
-      font-weight: 600;    
-
-      cursor: pointer;    select, input[type=file] {
-
-      transition: all 0.3s;      width: 100%;
-
-      box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4);      padding: 12px 16px;
-
-    }      border: 2px solid #e2e8f0;
-
-    button:hover {      border-radius: 10px;
-
-      transform: translateY(-2px);      font-size: 15px;
-
-      box-shadow: 0 6px 20px rgba(255, 0, 0, 0.5);      transition: all 0.2s;
-
-      background: #cc0000;      background: white;
-
-    }      color: #2d3748;
-
-    .banks-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px; }    }
-
-    .bank-badge { background: #f7fafc; padding: 6px 10px; border-radius: 6px; text-align: center; font-size: 11px; color: #4a5568; font-weight: 500; }    
-
-    .footer { text-align: center; margin-top: 24px; color: white; font-size: 13px; opacity: 0.9; }    input[type=text] {
-
-    .flex-badge { margin-top: 8px; display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.1); padding: 6px 10px; border-radius: 8px; }      width: 100%;
-
-    .flex-badge span { color: #ffffff; opacity: 0.95; }      padding: 12px 16px;
-
-    .flexcredit-logo { height: 20px; width: auto; display: block; }      border: 2px solid #e2e8f0;
-
-    .total-badge { margin-top: 16px; display: flex; justify-content: center; }      border-radius: 10px;
-
-    .badge-inline { display: inline-flex; align-items: center; gap: 6px; background: #f7fafc; padding: 6px 10px; border-radius: 8px; font-size: 11px; font-weight: 600; color: #2d3748; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }      font-size: 15px;
-
-    .badge-inline svg { height: 16px; }      transition: all 0.2s;
-
-    @media (max-width: 480px) {      background: white;
-
-      .card { padding: 28px 24px; }      color: #2d3748;
-
-      h1 { font-size: 24px; }    }
-
-      .banks-list { grid-template-columns: repeat(2, 1fr); }    
-
-    }    select:focus, input[type=file]:focus {
-
-  </style>      outline: none;
-
-</head>      border-color: #FF0000;
-
-<body>      box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.1);
-
-  <div class="container">    }
-
-    <div class="card">    
-
-      <div class="header">    input[type=text]:focus {
-
-        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 120'%3E%3Ctext x='0' y='80' font-family='Arial, sans-serif' font-size='70' font-weight='300' fill='%230000FF'%3EAPURE%3C/text%3E%3Ctext x='250' y='80' font-family='Arial Black, sans-serif' font-size='70' font-weight='900' fill='%23FF0000'%3EAQUI%3C/text%3E%3Ctext x='455' y='80' font-family='Arial Black, sans-serif' font-size='70' font-weight='900' fill='%23FF0000'%3E_X%3C/text%3E%3Ctext x='545' y='100' font-family='Arial, sans-serif' font-size='16' font-weight='400' fill='%23FF0000'%3EFINANCIAMENTOS%3C/text%3E%3C/svg%3E" alt="APURE AQUI" class="logo-apure">      outline: none;
-
-        <p class="subtitle">Extraia créditos dos seus extratos bancários</p>      border-color: #FF0000;
-
-      </div>      box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.1);
-
+﻿<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Apuracao de Extratos Bancarios</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 20px;
     }
-
-      {% with messages = get_flashed_messages() %}    
-
-        {% if messages %}    select {
-
-          {% for msg in messages %}      cursor: pointer;
-
-            <div class="flash">⚠️ {{ msg }}</div>      appearance: none;
-
-          {% endfor %}      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23FF0000' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
-
-        {% endif %}      background-repeat: no-repeat;
-
-      {% endwith %}      background-position: right 16px center;
-
-      padding-right: 40px;
-
-      <form action="{{ url_for('process') }}" method="post" enctype="multipart/form-data">    }
-
-        <div class="form-group">    
-
-          <label for="bank">🏦 Selecione o Banco</label>    input[type=file] {
-
-          <select id="bank" name="bank" required>      padding: 10px 16px;
-
-            <option value="" selected disabled>Escolha um banco...</option>      cursor: pointer;
-
-            <option value="itau">Itaú</option>    }
-
-            <option value="santander">Santander</option>    
-
-            <option value="nubank">Nubank</option>    input[type=file]::file-selector-button {
-
-            <option value="picpay">PicPay</option>      background: #FF0000;
-
-            <option value="mercadopago">Mercado Pago</option>      color: white;
-
-          </select>      border: none;
-
-          <div class="banks-list">      padding: 8px 16px;
-
-            <div class="bank-badge">Itaú</div>      border-radius: 6px;
-
-            <div class="bank-badge">Santander</div>      cursor: pointer;
-
-            <div class="bank-badge">Nubank</div>      font-weight: 600;
-
-            <div class="bank-badge">PicPay</div>      margin-right: 12px;
-
-            <div class="bank-badge">Mercado Pago</div>      transition: transform 0.2s;
-
-          </div>    }
-
-        </div>    
-
-    input[type=file]::file-selector-button:hover {
-
-        <div class="form-group">      transform: scale(1.05);
-
-          <label for="statement">📄 Arquivo(s) do Extrato (PDF)</label>      background: #cc0000;
-
-          <input type="file" id="statement" name="statement" accept="application/pdf" multiple required>    }
-
-        </div>    
-
-    button {
-
-        <div class="form-group">      width: 100%;
-
-          <label for="exclude_names">🚫 Nomes para Excluir (opcional)</label>      padding: 14px;
-
-          <input type="text" id="exclude_names" name="exclude_names" placeholder="Ex: João Silva, Maria Santos">      background: #FF0000;
-
-          <small style="color: #718096; font-size: 12px; margin-top: 4px; display: block;">      color: white;
-
-            Digite os nomes separados por vírgula. Transações com esses nomes serão ignoradas.      border: none;
-
-          </small>      border-radius: 10px;
-
-        </div>      font-size: 16px;
-
-      font-weight: 600;
-
-        <button type="submit">✨ Processar Extrato</button>      cursor: pointer;
-
-        <div class="total-badge">      transition: all 0.3s;
-
-          <div class="badge-inline" aria-label="Flexcredit marca">      box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4);
-
-            <span>Flexcredit</span>    }
-
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 20" role="img">    
-
-              <text x="0" y="15" font-family="Arial Black, sans-serif" font-size="14" fill="#0000FF">FLE</text>    button:hover {
-
-              <text x="30" y="15" font-family="Arial Black, sans-serif" font-size="14" fill="#FF0000">X</text>      transform: translateY(-2px);
-
-              <rect x="0" y="16" width="42" height="2" fill="#FF0000"/>      box-shadow: 0 6px 20px rgba(255, 0, 0, 0.5);
-
-              <text x="40" y="15" font-family="Arial Black, sans-serif" font-size="14" fill="#0000FF">CREDIT</text>      background: #cc0000;
-
-            </svg>    }
-
-          </div>    
-
-        </div>    button:active {
-
-      </form>      transform: translateY(0);
-
-    </div>    }
-
-        
-
-    <div class="footer">    .banks-list {
-
-      💡 Suporte: Itaú • Santander • Nubank • PicPay • Mercado Pago      display: grid;
-
-      <div class="flex-badge" aria-label="by Flexcredit">      grid-template-columns: repeat(3, 1fr);
-
-        <span>by</span>      gap: 8px;
-
-        <svg class="flexcredit-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 28" role="img" aria-label="Flexcredit">      margin-top: 8px;
-
-          <title>Flexcredit</title>    }
-
-          <text x="0" y="20" font-family="Arial Black, sans-serif" font-size="20" fill="#0000FF">FLE</text>    
-
-          <text x="45" y="20" font-family="Arial Black, sans-serif" font-size="20" fill="#FF0000">X</text>    .bank-badge {
-
-          <rect x="0" y="22" width="70" height="3" fill="#FF0000"/>      background: #f7fafc;
-
-          <text x="60" y="20" font-family="Arial Black, sans-serif" font-size="20" fill="#0000FF">CREDIT</text>      padding: 6px 10px;
-
-        </svg>      border-radius: 6px;
-
-      </div>      text-align: center;
-
-    </div>      font-size: 11px;
-
-  </div>      color: #4a5568;
-
-</body>      font-weight: 500;
-
-</html>    }
-
-    
-    .footer {
-      text-align: center;
-      margin-top: 24px;
-      color: white;
-      font-size: 13px;
-      opacity: 0.9;
+    .container { width: 100%; max-width: 500px; }
+    .card {
+      background: white;
+      border-radius: 24px;
+      padding: 48px 40px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     }
-    .flex-badge {
-      margin-top: 8px;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(255,255,255,0.1);
-      padding: 6px 10px;
-      border-radius: 8px;
+    .header { text-align: center; margin-bottom: 40px; }
+    .icon-box {
+      width: 80px; height: 80px;
+      margin: 0 auto 24px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 20px;
+      display: grid;
+      place-items: center;
+      font-size: 40px;
     }
-    .flex-badge span { color: #ffffff; opacity: 0.95; }
-    .flexcredit-logo { height: 20px; width: auto; display: block; }
-    .total-badge {
-      margin-top: 16px;
-      display: flex;
-      justify-content: center;
+    h1 { font-size: 28px; font-weight: 700; color: #1a202c; margin-bottom: 8px; }
+    .subtitle { color: #718096; font-size: 15px; }
+    .flash {
+      background: #fed7d7;
+      border-left: 4px solid #f56565;
+      color: #742a2a;
+      padding: 16px 20px;
+      border-radius: 12px;
+      margin-bottom: 32px;
+      font-size: 14px;
     }
-    .badge-inline {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+    .form-group { margin-bottom: 28px; }
+    label { display: block; font-weight: 600; color: #2d3748; margin-bottom: 10px; font-size: 14px; }
+    select, input[type=file], input[type=text] {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 15px;
+      transition: all 0.2s;
       background: #f7fafc;
-      padding: 6px 10px;
-      border-radius: 8px;
-      font-size: 11px;
-      font-weight: 600;
       color: #2d3748;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
     }
-    .badge-inline svg { height: 16px; }
-    
-    @media (max-width: 480px) {
-      .card { padding: 28px 24px; }
-      h1 { font-size: 24px; }
-      .banks-list { grid-template-columns: repeat(2, 1fr); }
+    select:focus, input:focus {
+      outline: none;
+      border-color: #667eea;
+      background: white;
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
     }
+    select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath fill='%23667eea' d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      padding-right: 48px;
+    }
+    input[type=file] { cursor: pointer; }
+    button {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    button:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(102, 126, 234, 0.5); }
+    .banks-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 12px; }
+    .bank-badge { background: #f7fafc; padding: 8px; border-radius: 8px; text-align: center; font-size: 12px; color: #4a5568; font-weight: 600; }
+    .footer { text-align: center; margin-top: 32px; color: white; font-size: 14px; }
+    small { display: block; color: #a0aec0; font-size: 13px; margin-top: 8px; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="card">
       <div class="header">
-        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 120'%3E%3Ctext x='0' y='80' font-family='Arial, sans-serif' font-size='70' font-weight='300' fill='%230000FF'%3EAPURE%3C/text%3E%3Ctext x='250' y='80' font-family='Arial Black, sans-serif' font-size='70' font-weight='900' fill='%23FF0000'%3EAQUI%3C/text%3E%3Ctext x='455' y='80' font-family='Arial Black, sans-serif' font-size='70' font-weight='900' fill='%23FF0000'%3E_X%3C/text%3E%3Ctext x='545' y='100' font-family='Arial, sans-serif' font-size='16' font-weight='400' fill='%23FF0000'%3EFINANCIAMENTOS%3C/text%3E%3C/svg%3E" alt="APURE AQUI" class="logo-apure">
-        <p class="subtitle">Extraia créditos dos seus extratos bancários</p>
+        <div class="icon-box">📊</div>
+        <h1>Apuracao de Extratos</h1>
+        <p class="subtitle">Extraia creditos dos seus extratos bancarios</p>
       </div>
 
       {% with messages = get_flashed_messages() %}
@@ -457,65 +107,36 @@
 
       <form action="{{ url_for('process') }}" method="post" enctype="multipart/form-data">
         <div class="form-group">
-          <label for="bank">🏦 Selecione o Banco</label>
+          <label for="bank">Selecione o Banco</label>
           <select id="bank" name="bank" required>
             <option value="" selected disabled>Escolha um banco...</option>
-            <option value="itau">Itaú</option>
+            <option value="itau">Itau</option>
             <option value="santander">Santander</option>
             <option value="nubank">Nubank</option>
             <option value="picpay">PicPay</option>
             <option value="mercadopago">Mercado Pago</option>
           </select>
-          <div class="banks-list">
-            <div class="bank-badge">Itaú</div>
+          <div class="banks-grid">
+            <div class="bank-badge">Itau</div>
             <div class="bank-badge">Santander</div>
             <div class="bank-badge">Nubank</div>
             <div class="bank-badge">PicPay</div>
             <div class="bank-badge">Mercado Pago</div>
           </div>
         </div>
-
         <div class="form-group">
-          <label for="statement">📄 Arquivo do Extrato (PDF)</label>
+          <label for="statement">Arquivo do Extrato (PDF)</label>
           <input type="file" id="statement" name="statement" accept="application/pdf" required>
         </div>
-
         <div class="form-group">
-          <label for="exclude_names">🚫 Nomes para Excluir (opcional)</label>
-          <input type="text" id="exclude_names" name="exclude_names" placeholder="Ex: João Silva, Maria Santos">
-          <small style="color: #718096; font-size: 12px; margin-top: 4px; display: block;">
-            Digite os nomes separados por vírgula. Transações com esses nomes serão ignoradas.
-          </small>
+          <label for="exclude_names">Nomes para Excluir (opcional)</label>
+          <input type="text" id="exclude_names" name="exclude_names" placeholder="Ex: Joao Silva, Maria Santos">
+          <small>Digite os nomes separados por virgula. Transacoes com esses nomes serao ignoradas.</small>
         </div>
-
-        <button type="submit">✨ Processar Extrato</button>
-        <div class="total-badge">
-          <div class="badge-inline" aria-label="Flexcredit marca">
-            <span>Flexcredit</span>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 20" role="img">
-              <text x="0" y="15" font-family="Arial Black, sans-serif" font-size="14" fill="#0000FF">FLE</text>
-              <text x="30" y="15" font-family="Arial Black, sans-serif" font-size="14" fill="#FF0000">X</text>
-              <rect x="0" y="16" width="42" height="2" fill="#FF0000"/>
-              <text x="40" y="15" font-family="Arial Black, sans-serif" font-size="14" fill="#0000FF">CREDIT</text>
-            </svg>
-          </div>
-        </div>
+        <button type="submit">Processar Extrato</button>
       </form>
     </div>
-    
-    <div class="footer">
-      💡 Suporte: Itaú • Santander • Nubank • PicPay • Mercado Pago
-      <div class="flex-badge" aria-label="by Flexcredit">
-        <span>by</span>
-        <svg class="flexcredit-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 28" role="img" aria-label="Flexcredit">
-          <title>Flexcredit</title>
-          <text x="0" y="20" font-family="Arial Black, sans-serif" font-size="20" fill="#0000FF">FLE</text>
-          <text x="45" y="20" font-family="Arial Black, sans-serif" font-size="20" fill="#FF0000">X</text>
-          <rect x="0" y="22" width="70" height="3" fill="#FF0000"/>
-          <text x="60" y="20" font-family="Arial Black, sans-serif" font-size="20" fill="#0000FF">CREDIT</text>
-        </svg>
-      </div>
-    </div>
+    <div class="footer">Suporte: Itau - Santander - Nubank - PicPay - Mercado Pago</div>
   </div>
 </body>
 </html>
